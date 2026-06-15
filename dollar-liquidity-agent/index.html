@@ -180,6 +180,49 @@
 
   .footer a:hover { text-decoration: underline; }
 
+  /* ── Callout ── */
+  .callout {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-bottom: 40px;
+    text-decoration: none;
+    transition: border-color 0.15s, background 0.15s;
+  }
+
+  .callout:hover {
+    border-color: var(--blue);
+    background: rgba(74, 158, 255, 0.04);
+  }
+
+  .callout-icon {
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  .callout-text {
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.5;
+    flex: 1;
+  }
+
+  .callout-arrow {
+    color: var(--text-muted);
+    font-size: 16px;
+    flex-shrink: 0;
+    transition: transform 0.15s;
+  }
+
+  .callout:hover .callout-arrow {
+    transform: translateX(3px);
+    color: var(--blue);
+  }
+
   /* ── Origin Story ── */
   .origin-story {
     margin-bottom: 48px;
@@ -244,6 +287,12 @@
     <p>So this time I did something different. I used the <a href="https://hyperagent.com" target="_blank" rel="noopener noreferrer">Hyperagent</a> platform to turn Martin's thesis into a monitoring system. Not a summary. A&nbsp;system: an agent that wakes up every morning, checks whether the predictions are materialising, and tells me what changed.</p>
     <p>That agent is Matthew.</p>
   </div>
+
+  <a class="callout" href="architecture.html">
+    <span class="callout-icon">⚙</span>
+    <span class="callout-text">Interested in the architecture? See how Matthew pulls 30+ data points from seven sources and evaluates nine alert thresholds every week.</span>
+    <span class="callout-arrow">→</span>
+  </a>
 
   <div class="section-label">Weekly Dashboards</div>
 
