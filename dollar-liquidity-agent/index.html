@@ -180,6 +180,41 @@
 
   .footer a:hover { text-decoration: underline; }
 
+  /* ── Origin Story ── */
+  .origin-story {
+    margin-bottom: 48px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .origin-story p {
+    font-size: 15px;
+    line-height: 1.75;
+    color: var(--text);
+    max-width: 640px;
+    margin-bottom: 16px;
+  }
+
+  .origin-story p:last-child { margin-bottom: 0; }
+
+  .origin-story blockquote {
+    border-left: 3px solid var(--text-muted);
+    margin: 20px 0;
+    padding: 12px 0 12px 24px;
+    font-size: 15px;
+    line-height: 1.75;
+    color: var(--text-muted);
+    font-style: italic;
+    max-width: 640px;
+  }
+
+  .origin-story a {
+    color: var(--blue);
+    text-decoration: none;
+  }
+
+  .origin-story a:hover { text-decoration: underline; }
+
   @media (max-width: 600px) {
     .page { padding: 24px 20px 60px; }
     h1 { font-size: 24px; }
@@ -196,6 +231,18 @@
 
   <div class="overview">
     Matthew monitors U.S. dollar-liquidity stress signals across the Federal Reserve, U.S.&nbsp;Treasury, and foreign central banks. It tracks swap-line activity, FIMA Repo usage, Treasury-custody flows, and Japan's reserve position to detect systemic stress in the global dollar funding system. Weekly dashboards are published here with calibrated alert thresholds and Tier&nbsp;A/B source verification.
+  </div>
+
+  <div class="section-label">Triggering Idea — Setting the Context</div>
+
+  <div class="origin-story">
+    <p>The whole idea stems from Jay Martin's Substack article <em>The First Domino Has Fallen</em>, published on 10&nbsp;May&nbsp;2026. Martin's thesis:</p>
+    <blockquote>
+      The United Arab Emirates — sitting on $95&nbsp;billion in U.S. Treasury bonds — had just asked Washington for an emergency dollar loan rather than sell those bonds into a stressed market. Not because the UAE was broke. Because selling would have crashed the very asset the entire global financial system treats as bedrock. And the UAE, Martin argued, was only the first domino. Kuwait, Japan, South&nbsp;Korea — any country burning through cash while the Strait of Hormuz stays closed — faces the same arithmetic.
+    </blockquote>
+    <p>I read the piece, felt the familiar itch to "check back on this in a&nbsp;month," and realised I never do. The article sits in a bookmarked tab, the tab gets buried, the thesis either plays out or it doesn't, and I find out six months later from a headline.</p>
+    <p>So this time I did something different. I used the <a href="https://hyperagent.com" target="_blank" rel="noopener noreferrer">Hyperagent</a> platform to turn Martin's thesis into a monitoring system. Not a summary. A&nbsp;system: an agent that wakes up every morning, checks whether the predictions are materialising, and tells me what changed.</p>
+    <p>That agent is Matthew.</p>
   </div>
 
   <div class="section-label">Weekly Dashboards</div>
