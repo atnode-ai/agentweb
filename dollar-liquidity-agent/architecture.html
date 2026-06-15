@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matthew — Architecture</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e14;
+    --surface: #111820;
+    --border: #1e2a38;
+    --text: #c8d3df;
+    --text-muted: #6b7d93;
+    --text-bright: #e8edf3;
+    --red: #e74856;
+    --red-dim: rgba(231, 72, 86, 0.15);
+    --amber: #f5a623;
+    --green: #27c93f;
+    --blue: #4a9eff;
+    --cyan: #56d4c0;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'IBM Plex Sans', -apple-system, sans-serif;
+    min-height: 100vh;
+  }
+
+  .page {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 48px 40px 80px;
+  }
+
+  .back-link {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--text-muted);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 32px;
+  }
+
+  .back-link:hover { color: var(--blue); }
+
+  .agent-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+
+  h1 {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--text-bright);
+    letter-spacing: -0.3px;
+    margin-bottom: 32px;
+  }
+
+  .content p {
+    font-size: 15px;
+    line-height: 1.8;
+    color: var(--text);
+    margin-bottom: 20px;
+    max-width: 680px;
+  }
+
+  .content h2 {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-top: 40px;
+    margin-bottom: 16px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+  }
+
+  .content h2:first-of-type {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: none;
+  }
+
+  .content strong { color: var(--text-bright); font-weight: 600; }
+
+  .content a {
+    color: var(--blue);
+    text-decoration: none;
+  }
+
+  .content a:hover { text-decoration: underline; }
+
+  /* ── Metric Grid ── */
+  .metric-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 24px 0;
+  }
+
+  .metric-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 14px 16px;
+  }
+
+  .metric-card .label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+  }
+
+  .metric-card .value {
+    font-size: 14px;
+    color: var(--text-bright);
+    font-weight: 500;
+  }
+
+  /* ── Threshold Table ── */
+  .threshold-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 13px;
+  }
+
+  .threshold-table th {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    text-align: left;
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .threshold-table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+  }
+
+  .threshold-table tr:last-child td { border-bottom: none; }
+
+  .threshold-table .tag {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 3px;
+  }
+
+  .tag-us { background: rgba(74,158,255,0.12); color: var(--blue); }
+  .tag-jp { background: rgba(180,142,173,0.15); color: #b48ead; }
+
+  /* ── Footer ── */
+  .footer {
+    margin-top: 60px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  .footer a { color: var(--blue); text-decoration: none; }
+  .footer a:hover { text-decoration: underline; }
+
+  @media (max-width: 600px) {
+    .page { padding: 24px 20px 60px; }
+    h1 { font-size: 22px; }
+    .metric-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <a class="back-link" href="index.html">← Back to overview</a>
+
+  <div class="agent-label">Agent: Matthew</div>
+  <h1>Architecture</h1>
+
+  <div class="content">
+
+    <h2>What Matthew Does</h2>
+
+    <p>Matthew is a scheduled monitoring agent built on <a href="https://hyperagent.com" target="_blank" rel="noopener noreferrer">Hyperagent</a>. Every Friday morning it pulls data from five primary sources, runs nine calibrated alert thresholds, scans Tier&nbsp;A/B news wires for corroborating evidence, and posts a structured status report — GREEN, AMBER, or RED — to a private Slack channel. The entire cycle runs unattended in under two minutes.</p>
+
+    <h2>Data Sources</h2>
+
+    <p>Each cycle queries <strong>four federal data APIs</strong> and <strong>three Japanese government sources</strong>, producing roughly 30 individual data points per run:</p>
+
+    <div class="metric-grid">
+      <div class="metric-card">
+        <div class="label">H.4.1 via FRED</div>
+        <div class="value">SWPT, WMTSEC1, WSEFINT1 — weekly swap balances and foreign custody of Treasuries. Six-week rolling trend with week-on-week and baseline deltas.</div>
+      </div>
+      <div class="metric-card">
+        <div class="label">NY Fed Markets API</div>
+        <div class="value">Standing swap-line operations and FIMA Repo Facility draws. Checked for non-zero activity by non-baseline counterparties.</div>
+      </div>
+      <div class="metric-card">
+        <div class="label">TIC SLT (Treasury)</div>
+        <div class="value">Monthly major foreign holders of U.S. Treasuries. Country-level tracking for Japan, China, Saudi Arabia, UAE, and 20 others. Two-month publication lag.</div>
+      </div>
+      <div class="metric-card">
+        <div class="label">Japan MoF / BoJ</div>
+        <div class="value">Monthly foreign reserves (total, FX, gold, SDR), BoJ balance sheet (FX assets, government securities), confirmed FX intervention operations, and USD/JPY spot rate.</div>
+      </div>
+    </div>
+
+    <p>News scanning covers <strong>Tier&nbsp;A sources</strong> (Federal Reserve and U.S. Treasury press releases, FOMC minutes, central-bank governor statements) and <strong>Tier&nbsp;B sources</strong> (Bloomberg, Reuters, Financial Times, Wall Street Journal, CNBC, Nikkei). Analyst opinion and Substack commentary are noted for context but cannot trigger an alert alone.</p>
+
+    <h2>Nine Alert Thresholds</h2>
+
+    <p>Thresholds are calibrated to avoid false positives. Matthew is designed to be hard to startle — its value is that when it does alert, the signal is real. The framework distinguishes strong stress signals (multi-country swap-line cluster), medium signals (official approval or facility usage), and weak/noise signals (single-country informal inquiry).</p>
+
+    <table class="threshold-table">
+      <thead>
+        <tr><th>#</th><th>Threshold</th><th>Scope</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>Swap-line balance exceeds $1B</td><td><span class="tag tag-us">US</span></td></tr>
+        <tr><td>2</td><td>FIMA Repo &gt; $0 for two consecutive weeks</td><td><span class="tag tag-us">US</span></td></tr>
+        <tr><td>3</td><td>Four-week custody decline exceeds $50B</td><td><span class="tag tag-us">US</span></td></tr>
+        <tr><td>4</td><td>New non-baseline swap counterparty confirmed</td><td><span class="tag tag-us">US</span></td></tr>
+        <tr><td>5</td><td>Cluster: 2+ countries in Tier A/B within 30 days</td><td><span class="tag tag-us">US</span></td></tr>
+        <tr><td>6</td><td>Temporary → permanent swap-line conversion</td><td><span class="tag tag-us">US</span></td></tr>
+        <tr><td>J1</td><td>Japan reserves drop &gt; $25B in one month</td><td><span class="tag tag-jp">Japan</span></td></tr>
+        <tr><td>J2</td><td>BoJ FX assets decline &gt; 5% month-on-month</td><td><span class="tag tag-jp">Japan</span></td></tr>
+        <tr><td>J3</td><td>Confirmed MoF FX intervention</td><td><span class="tag tag-jp">Japan</span></td></tr>
+      </tbody>
+    </table>
+
+    <h2>Execution Architecture</h2>
+
+    <p>The agent runs on Hyperagent's scheduled invocation system. A single Python runner script (<code>run_weekly_cycle.py</code>) orchestrates all four data fetches, computes deltas against stored baselines, evaluates all nine thresholds, and outputs structured JSON plus a pre-formatted Slack message. The agent layer then scans news sources, applies editorial judgment on status calibration, posts to Slack, updates the project document, and pushes the dashboard to GitHub Pages.</p>
+
+    <p>API credentials (FRED, GitHub) are stored as skill-level secrets, injected at runtime, and never appear in conversation history or output. The agent maintains a rolling eight-week window of research findings, with older entries rotated to an archive document to keep the working context lean.</p>
+
+    <p>All scripts, thresholds, and baseline values are version-controlled as a reusable Hyperagent skill, so the monitoring logic can be updated, audited, and rolled back independently of the agent's conversational prompt.</p>
+
+  </div>
+
+  <div class="footer">
+    Part of the <a href="https://atnode.ai" target="_blank" rel="noopener noreferrer">Atnode</a> agent fleet &middot;
+    Built on <a href="https://hyperagent.com" target="_blank" rel="noopener noreferrer">Hyperagent</a> &middot;
+    <a href="index.html">← Back to overview</a>
+  </div>
+
+</div>
+</body>
+</html>
