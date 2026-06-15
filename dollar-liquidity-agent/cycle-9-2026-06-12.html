@@ -1,0 +1,852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matthew — Dollar-Liquidity Stress Monitor | Cycle 9</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3/dist/chartjs-plugin-annotation.min.js"></script>
+<style>
+  :root {
+    --bg: #0a0e14;
+    --surface: #111820;
+    --surface-2: #171f2a;
+    --border: #1e2a38;
+    --text: #c8d3df;
+    --text-muted: #6b7d93;
+    --text-bright: #e8edf3;
+    --red: #e74856;
+    --red-dim: rgba(231, 72, 86, 0.15);
+    --amber: #f5a623;
+    --amber-dim: rgba(245, 166, 35, 0.12);
+    --green: #27c93f;
+    --green-dim: rgba(39, 201, 63, 0.12);
+    --blue: #4a9eff;
+    --blue-dim: rgba(74, 158, 255, 0.1);
+    --cyan: #56d4c0;
+    --purple: #b48ead;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'IBM Plex Sans', -apple-system, sans-serif;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  .dashboard {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 32px 40px 60px;
+  }
+
+  /* ── Header ── */
+  .header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 36px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .header-left h1 {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+  }
+
+  .header-left .title {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--text-bright);
+    letter-spacing: -0.3px;
+  }
+
+  .header-left .subtitle {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-top: 4px;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  .status-badge {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 20px;
+    border-radius: 8px;
+    border: 1px solid var(--red);
+    background: var(--red-dim);
+  }
+
+  .status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--red);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(231,72,86,0.5); }
+    50% { opacity: 0.7; box-shadow: 0 0 0 6px rgba(231,72,86,0); }
+  }
+
+  .status-text {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--red);
+    letter-spacing: 1px;
+  }
+
+  .status-since {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  /* ── Metric Cards ── */
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px 20px;
+  }
+
+  .card-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+
+  .card-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--text-bright);
+    letter-spacing: -0.5px;
+  }
+
+  .card-delta {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    margin-top: 6px;
+    display: flex;
+    gap: 12px;
+  }
+
+  .delta-neg { color: var(--red); }
+  .delta-pos { color: var(--green); }
+  .delta-neutral { color: var(--text-muted); }
+
+  .card.alert {
+    border-color: var(--red);
+    background: var(--red-dim);
+  }
+
+  .card.alert .card-value { color: var(--red); }
+
+  /* ── Charts ── */
+  .chart-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 32px;
+  }
+
+  .chart-panel {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px;
+  }
+
+  .chart-panel.full { grid-column: 1 / -1; }
+
+  .chart-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+  }
+
+  .chart-desc {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+  }
+
+  .chart-container {
+    position: relative;
+    height: 240px;
+  }
+
+  .chart-panel.tall .chart-container {
+    height: 300px;
+  }
+
+  /* ── Alert Table ── */
+  .alert-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 24px;
+    margin-bottom: 32px;
+  }
+
+  .alert-section h3 {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  th {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    text-align: left;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  td {
+    font-size: 13px;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+  }
+
+  tr:last-child td { border-bottom: none; }
+
+  .tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 500;
+  }
+
+  .tag-red { background: var(--red-dim); color: var(--red); border: 1px solid rgba(231,72,86,0.3); }
+  .tag-green { background: var(--green-dim); color: var(--green); border: 1px solid rgba(39,201,63,0.2); }
+  .tag-amber { background: var(--amber-dim); color: var(--amber); border: 1px solid rgba(245,166,35,0.2); }
+
+  /* ── Footer ── */
+  .footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  .footer-sources {
+    max-width: 70%;
+    line-height: 1.6;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 900px) {
+    .dashboard { padding: 20px; }
+    .cards { grid-template-columns: repeat(2, 1fr); }
+    .chart-grid { grid-template-columns: 1fr; }
+    .header { flex-direction: column; gap: 16px; }
+  }
+
+  @media (max-width: 500px) {
+    .cards { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="dashboard">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-left">
+      <h1>Matthew</h1>
+      <div class="title">Dollar-Liquidity Stress Monitor</div>
+      <div class="subtitle">Cycle 9 &middot; 12 June 2026 &middot; H.4.1 data through 10 Jun</div>
+    </div>
+    <div>
+      <div class="status-badge">
+        <div class="status-dot"></div>
+        <div>
+          <div class="status-text">RED</div>
+          <div class="status-since">3 thresholds crossed</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Metric Cards -->
+  <div class="cards">
+    <div class="card">
+      <div class="card-label">Swap Lines (SWPT)</div>
+      <div class="card-value">$28M</div>
+      <div class="card-delta">
+        <span class="delta-pos">WoW −$88M</span>
+        <span class="delta-neutral">vs base −$178M</span>
+      </div>
+    </div>
+    <div class="card alert">
+      <div class="card-label">Foreign Custody (WMTSEC1)</div>
+      <div class="card-value">$2.643T</div>
+      <div class="card-delta">
+        <span class="delta-neg">WoW −$23.1B</span>
+        <span class="delta-neg">4wk −$70.5B</span>
+      </div>
+    </div>
+    <div class="card alert">
+      <div class="card-label">Japan MoF Reserves</div>
+      <div class="card-value">$1.306T</div>
+      <div class="card-delta">
+        <span class="delta-neg">MoM −$77.1B</span>
+        <span class="delta-neg">Record drop</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-label">FIMA Repo</div>
+      <div class="card-value">$0</div>
+      <div class="card-delta">
+        <span class="delta-neutral">No usage</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts Row 1 -->
+  <div class="chart-grid">
+    <div class="chart-panel tall">
+      <div class="chart-title">Foreign Treasury Custody (WMTSEC1)</div>
+      <div class="chart-desc">Weekly, $B. Red zone = 4-week decline exceeds $50B threshold.</div>
+      <div class="chart-container">
+        <canvas id="custodyChart"></canvas>
+      </div>
+    </div>
+    <div class="chart-panel tall">
+      <div class="chart-title">All Foreign Custody (WSEFINT1)</div>
+      <div class="chart-desc">Weekly, $B. Broader measure including agencies and corporates.</div>
+      <div class="chart-container">
+        <canvas id="allCustodyChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts Row 2 -->
+  <div class="chart-grid">
+    <div class="chart-panel">
+      <div class="chart-title">Swap Line Balance (SWPT)</div>
+      <div class="chart-desc">Weekly, $M. Alert threshold: $1,000M.</div>
+      <div class="chart-container">
+        <canvas id="swptChart"></canvas>
+      </div>
+    </div>
+    <div class="chart-panel">
+      <div class="chart-title">Japan MoF Foreign Reserves</div>
+      <div class="chart-desc">Monthly, $B. J1 threshold: >$25B MoM decline.</div>
+      <div class="chart-container">
+        <canvas id="japanChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4-week MoM Custody Decline -->
+  <div class="chart-grid">
+    <div class="chart-panel full">
+      <div class="chart-title">4-Week Rolling Custody Decline (WMTSEC1)</div>
+      <div class="chart-desc">Computed from H.4.1 weekly data. Alert threshold: −$50B (dashed red line). Values below the line trigger Threshold #3.</div>
+      <div class="chart-container">
+        <canvas id="momChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Alert Threshold Table -->
+  <div class="alert-section">
+    <h3>Alert Threshold Status</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Threshold</th>
+          <th>Current Value</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td>
+          <td>Swap balance &gt; $1B</td>
+          <td>$28M</td>
+          <td><span class="tag tag-green">CLEAR</span></td>
+        </tr>
+        <tr>
+          <td>2</td>
+          <td>FIMA Repo &gt; $0 for 2+ consecutive weeks</td>
+          <td>$0</td>
+          <td><span class="tag tag-green">CLEAR</span></td>
+        </tr>
+        <tr>
+          <td>3</td>
+          <td>4-week custody decline &gt; $50B</td>
+          <td>−$70.5B</td>
+          <td><span class="tag tag-red">CROSSED — 2nd week</span></td>
+        </tr>
+        <tr>
+          <td>4</td>
+          <td>New non-baseline swap counterparty confirmed</td>
+          <td>None</td>
+          <td><span class="tag tag-green">CLEAR</span></td>
+        </tr>
+        <tr>
+          <td>5</td>
+          <td>Cluster: 2+ countries in Tier A/B within 30 days</td>
+          <td>None new</td>
+          <td><span class="tag tag-green">CLEAR</span></td>
+        </tr>
+        <tr>
+          <td>6</td>
+          <td>Temp → permanent swap-line conversion</td>
+          <td>None</td>
+          <td><span class="tag tag-green">CLEAR</span></td>
+        </tr>
+        <tr>
+          <td>J1</td>
+          <td>Japan reserves &gt; $25B MoM drop</td>
+          <td>−$77.1B</td>
+          <td><span class="tag tag-red">CROSSED — 1st time</span></td>
+        </tr>
+        <tr>
+          <td>J2</td>
+          <td>BoJ FX assets &gt; 5% MoM decline</td>
+          <td>+0.19%</td>
+          <td><span class="tag tag-green">CLEAR</span></td>
+        </tr>
+        <tr>
+          <td>J3</td>
+          <td>Confirmed FX intervention</td>
+          <td>¥11.73T (28 Apr–27 May)</td>
+          <td><span class="tag tag-red">CROSSED — 1st time</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Upcoming Events -->
+  <div class="alert-section">
+    <h3>Critical Calendar — Next 7 Days</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Event</th>
+          <th>Why It Matters</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="white-space:nowrap; color:var(--amber);">16–17 Jun</td>
+          <td>Warsh first FOMC + press conference</td>
+          <td>Swap-line authority stance, international finance policy, FIMA Repo rate. Highest-importance event since monitoring began.</td>
+        </tr>
+        <tr>
+          <td style="white-space:nowrap; color:var(--amber);">18 Jun</td>
+          <td>TIC April 2026 data release (4:00 PM ET)</td>
+          <td>First month covering confirmed Japan intervention. If Japan selling exceeds March's $47.7B, RED deepens.</td>
+        </tr>
+        <tr>
+          <td style="white-space:nowrap;">~14–16 Jun</td>
+          <td>Hormuz MOU signing (tentative)</td>
+          <td>If signed, macro stress driver partially resolves. Watch oil price and Gulf CB behaviour.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <div class="footer-sources">
+      Sources: Federal Reserve H.4.1 (Tier A) &middot; FRED API &middot; NY Fed Markets API &middot; Japan MoF (Tier A) &middot; TIC SLT (Tier A) &middot; Bloomberg, Reuters, FT, WSJ, CNBC, Nikkei (Tier B)
+    </div>
+    <div>Cycle 9 of 9 &middot; Monitoring since 13 May 2026</div>
+  </div>
+
+</div>
+
+<script>
+const chartDefaults = {
+  font: { family: "'IBM Plex Mono', monospace", size: 11 },
+  color: '#6b7d93',
+};
+Chart.defaults.font = chartDefaults.font;
+Chart.defaults.color = chartDefaults.color;
+
+const gridColor = 'rgba(30, 42, 56, 0.8)';
+const tickColor = '#6b7d93';
+
+const dates6w = ['May 6', 'May 13', 'May 20', 'May 27', 'Jun 3', 'Jun 10'];
+
+// ── WMTSEC1 Chart ──
+new Chart(document.getElementById('custodyChart'), {
+  type: 'line',
+  data: {
+    labels: dates6w,
+    datasets: [{
+      label: 'WMTSEC1 ($B)',
+      data: [2737.9, 2713.9, 2680.3, 2686.6, 2666.6, 2643.5],
+      borderColor: '#4a9eff',
+      backgroundColor: 'rgba(74, 158, 255, 0.08)',
+      fill: true,
+      tension: 0.25,
+      pointRadius: 5,
+      pointBackgroundColor: function(ctx) {
+        return ctx.dataIndex === 5 ? '#e74856' : '#4a9eff';
+      },
+      pointBorderColor: function(ctx) {
+        return ctx.dataIndex === 5 ? '#e74856' : '#4a9eff';
+      },
+      pointRadius: function(ctx) {
+        return ctx.dataIndex === 5 ? 7 : 4;
+      },
+      borderWidth: 2.5,
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      annotation: {
+        annotations: {
+          baseline: {
+            type: 'line',
+            yMin: 2737.9,
+            yMax: 2737.9,
+            borderColor: 'rgba(107, 125, 147, 0.4)',
+            borderWidth: 1,
+            borderDash: [4, 4],
+            label: {
+              content: 'Baseline $2.738T',
+              display: true,
+              position: 'start',
+              font: { size: 10, family: "'IBM Plex Mono', monospace" },
+              color: '#6b7d93',
+              backgroundColor: 'transparent',
+            }
+          }
+        }
+      }
+    },
+    scales: {
+      x: { grid: { color: gridColor }, ticks: { color: tickColor } },
+      y: {
+        grid: { color: gridColor },
+        ticks: { color: tickColor, callback: v => '$' + v.toFixed(0) + 'B' },
+        min: 2620,
+        max: 2760,
+      }
+    }
+  }
+});
+
+// ── WSEFINT1 Chart ──
+new Chart(document.getElementById('allCustodyChart'), {
+  type: 'line',
+  data: {
+    labels: dates6w,
+    datasets: [{
+      label: 'WSEFINT1 ($B)',
+      data: [3028.9, 3005.1, 2970.5, 2972.4, 2951.4, 2927.9],
+      borderColor: '#56d4c0',
+      backgroundColor: 'rgba(86, 212, 192, 0.06)',
+      fill: true,
+      tension: 0.25,
+      pointRadius: 4,
+      pointBackgroundColor: '#56d4c0',
+      borderWidth: 2.5,
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      annotation: {
+        annotations: {
+          baseline: {
+            type: 'line',
+            yMin: 3028.9,
+            yMax: 3028.9,
+            borderColor: 'rgba(107, 125, 147, 0.4)',
+            borderWidth: 1,
+            borderDash: [4, 4],
+            label: {
+              content: 'Baseline $3.029T',
+              display: true,
+              position: 'start',
+              font: { size: 10, family: "'IBM Plex Mono', monospace" },
+              color: '#6b7d93',
+              backgroundColor: 'transparent',
+            }
+          }
+        }
+      }
+    },
+    scales: {
+      x: { grid: { color: gridColor }, ticks: { color: tickColor } },
+      y: {
+        grid: { color: gridColor },
+        ticks: { color: tickColor, callback: v => '$' + v.toFixed(0) + 'B' },
+        min: 2900,
+        max: 3060,
+      }
+    }
+  }
+});
+
+// ── SWPT Chart ──
+new Chart(document.getElementById('swptChart'), {
+  type: 'bar',
+  data: {
+    labels: dates6w,
+    datasets: [{
+      label: 'SWPT ($M)',
+      data: [206, 42, 16, 50, 116, 28],
+      backgroundColor: function(ctx) {
+        const colors = [
+          'rgba(74, 158, 255, 0.6)',
+          'rgba(74, 158, 255, 0.6)',
+          'rgba(74, 158, 255, 0.6)',
+          'rgba(74, 158, 255, 0.6)',
+          'rgba(245, 166, 35, 0.6)',
+          'rgba(74, 158, 255, 0.6)',
+        ];
+        return colors[ctx.dataIndex];
+      },
+      borderColor: function(ctx) {
+        const colors = [
+          '#4a9eff',
+          '#4a9eff',
+          '#4a9eff',
+          '#4a9eff',
+          '#f5a623',
+          '#4a9eff',
+        ];
+        return colors[ctx.dataIndex];
+      },
+      borderWidth: 1.5,
+      borderRadius: 4,
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      annotation: {
+        annotations: {
+          threshold: {
+            type: 'line',
+            yMin: 1000,
+            yMax: 1000,
+            borderColor: 'rgba(231, 72, 86, 0.5)',
+            borderWidth: 1.5,
+            borderDash: [6, 4],
+            label: {
+              content: 'Alert: $1,000M',
+              display: true,
+              position: 'end',
+              font: { size: 10, family: "'IBM Plex Mono', monospace" },
+              color: '#e74856',
+              backgroundColor: 'transparent',
+            }
+          }
+        }
+      }
+    },
+    scales: {
+      x: { grid: { color: gridColor }, ticks: { color: tickColor } },
+      y: {
+        grid: { color: gridColor },
+        ticks: { color: tickColor, callback: v => '$' + v + 'M' },
+        min: 0,
+        max: 1100,
+      }
+    }
+  }
+});
+
+// ── Japan Reserves Chart ──
+new Chart(document.getElementById('japanChart'), {
+  type: 'bar',
+  data: {
+    labels: ['Apr 2026\n(Baseline)', 'May 2026'],
+    datasets: [{
+      label: 'Total Reserves ($B)',
+      data: [1383.0, 1305.9],
+      backgroundColor: ['rgba(180, 142, 173, 0.5)', 'rgba(231, 72, 86, 0.5)'],
+      borderColor: ['#b48ead', '#e74856'],
+      borderWidth: 1.5,
+      borderRadius: 4,
+      barPercentage: 0.5,
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      annotation: {
+        annotations: {
+          delta: {
+            type: 'label',
+            xValue: 0.5,
+            yValue: 1344,
+            content: ['−$77.1B', '(record drop)'],
+            font: [
+              { size: 16, weight: '700', family: "'IBM Plex Sans', sans-serif" },
+              { size: 10, family: "'IBM Plex Mono', monospace" }
+            ],
+            color: ['#e74856', '#e74856'],
+            backgroundColor: 'transparent',
+          }
+        }
+      }
+    },
+    scales: {
+      x: { grid: { color: gridColor }, ticks: { color: tickColor } },
+      y: {
+        grid: { color: gridColor },
+        ticks: { color: tickColor, callback: v => '$' + v + 'B' },
+        min: 1250,
+        max: 1420,
+      }
+    }
+  }
+});
+
+// ── 4-Week MoM Chart ──
+// Computed: for each week, the 4-week-earlier value minus current
+// We have 6 weeks, so we can compute 2 MoM points (weeks 5 and 6, i.e. Jun 3 and Jun 10)
+// But let's show the weekly decline waterfall instead
+const wmtsec = [2737892, 2713935, 2680260, 2686628, 2666602, 2643472];
+// 4-week rolling: week[i] - week[i-4] (need at least 5 data points)
+// week 4 (index 4, Jun 3): 2666602 - 2737892 = -71290
+// week 5 (index 5, Jun 10): 2643472 - 2713935 = -70463
+// For earlier weeks, we'd need older data. Let's show what we have plus estimates from project doc
+// From project doc: May 27 4-wk MoM = -40,300; May 20 4-wk MoM = -45,400
+const momData = [
+  { label: 'May 20', value: -45.4 },
+  { label: 'May 27', value: -40.3 },
+  { label: 'Jun 3', value: -71.3 },
+  { label: 'Jun 10', value: -70.5 },
+];
+
+new Chart(document.getElementById('momChart'), {
+  type: 'bar',
+  data: {
+    labels: momData.map(d => d.label),
+    datasets: [{
+      label: '4-wk Δ ($B)',
+      data: momData.map(d => d.value),
+      backgroundColor: function(ctx) {
+        return momData[ctx.dataIndex].value < -50
+          ? 'rgba(231, 72, 86, 0.5)'
+          : 'rgba(245, 166, 35, 0.4)';
+      },
+      borderColor: function(ctx) {
+        return momData[ctx.dataIndex].value < -50
+          ? '#e74856'
+          : '#f5a623';
+      },
+      borderWidth: 1.5,
+      borderRadius: 4,
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      annotation: {
+        annotations: {
+          threshold: {
+            type: 'line',
+            yMin: -50,
+            yMax: -50,
+            borderColor: 'rgba(231, 72, 86, 0.7)',
+            borderWidth: 2,
+            borderDash: [6, 4],
+            label: {
+              content: 'Alert threshold: −$50B',
+              display: true,
+              position: 'start',
+              font: { size: 10, weight: '600', family: "'IBM Plex Mono', monospace" },
+              color: '#e74856',
+              backgroundColor: 'rgba(10, 14, 20, 0.8)',
+              padding: 4,
+            }
+          },
+          zero: {
+            type: 'line',
+            yMin: 0,
+            yMax: 0,
+            borderColor: 'rgba(107, 125, 147, 0.3)',
+            borderWidth: 1,
+          }
+        }
+      }
+    },
+    scales: {
+      x: { grid: { color: gridColor }, ticks: { color: tickColor } },
+      y: {
+        grid: { color: gridColor },
+        ticks: { color: tickColor, callback: v => (v > 0 ? '+' : '') + v + 'B' },
+        min: -85,
+        max: 10,
+      }
+    }
+  }
+});
+</script>
+</body>
+</html>
