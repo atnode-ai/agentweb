@@ -9,35 +9,62 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
-    --navy:#0f2a4a; --blue:#1f5fa8; --ink:#1a2230; --text:#2b3543;
-    --text-muted:#5b6776; --text-bright:#0f2a4a;
-    --border:#e2e7ee; --soft:#f4f6f9; --bg:#e7eaef; --surface:#ffffff;
-    --red:#c0392b; --red-dim:#fbeae8;
-    --amber:#b06f0e; --amber-dim:#f8f0e1;
-    --green:#1f7a5a; --green-dim:#e8f3ee;
+    --navy: #0f2a4a;
+    --blue: #1f5fa8;
+    --ink: #1a2230;
+    --muted: #5b6776;
+    --line: #e2e7ee;
+    --soft: #f4f6f9;
+    --bg: #e7eaef;
+    --red: #c0392b;
+    --red-bg: #fdf0ef;
+    --red-border: #f0c6c1;
+    --amber: #b8860b;
+    --amber-bg: #fdf6e3;
+    --amber-border: #e8d5a0;
+    --green: #1a7a3a;
+    --green-bg: #eef7f0;
+    --green-border: #b8dcc2;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   body {
     background: var(--bg);
-    color: var(--text);
+    color: var(--ink);
     font-family: 'Inter', -apple-system, system-ui, sans-serif;
+    line-height: 1.55;
     -webkit-font-smoothing: antialiased;
-    min-height: 100vh;
-    padding-bottom: 50px;
+    padding: 0 0 60px;
   }
+
+  a { color: inherit; }
 
   .page {
-    width: min(860px, 94vw);
+    width: min(820px, 94vw);
+    background: #fff;
     margin: 34px auto 0;
-    background: var(--surface);
+    padding: 46px 56px 50px;
     border-top: 4px solid var(--navy);
     box-shadow: 0 2px 26px rgba(15,42,74,.11);
-    padding: 46px 56px 50px;
   }
 
+  @media (max-width: 600px) { .page { padding: 34px 24px 40px; } }
+
   /* ── Header ── */
+  .back-link {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 28px;
+  }
+
+  .back-link:hover { color: var(--blue); }
+
   .agent-label {
     font-family: 'IBM Plex Mono', monospace;
     font-size: 11px;
@@ -49,24 +76,24 @@
   }
 
   h1 {
-    font-size: 32px;
+    font-size: 30px;
     font-weight: 800;
-    color: var(--text-bright);
-    letter-spacing: -0.5px;
+    color: var(--navy);
+    letter-spacing: -.02em;
     margin-bottom: 24px;
   }
 
   .overview {
-    font-size: 16px;
-    line-height: 1.7;
-    color: var(--text);
+    font-size: 15px;
+    line-height: 1.75;
+    color: var(--ink);
     max-width: 640px;
-    margin-bottom: 44px;
-    padding-bottom: 30px;
-    border-bottom: 1px solid var(--border);
+    margin-bottom: 40px;
+    padding-bottom: 28px;
+    border-bottom: 1px solid var(--line);
   }
 
-  /* ── Dashboard List ── */
+  /* ── Section Labels ── */
   .section-label {
     font-family: 'IBM Plex Mono', monospace;
     font-size: 11px;
@@ -74,9 +101,88 @@
     letter-spacing: 2px;
     text-transform: uppercase;
     color: var(--blue);
-    margin-bottom: 20px;
+    margin-bottom: 18px;
   }
 
+  /* ── Origin Story ── */
+  .origin-story {
+    margin-bottom: 40px;
+    padding-bottom: 28px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .origin-story p {
+    font-size: 15px;
+    line-height: 1.75;
+    color: var(--ink);
+    max-width: 640px;
+    margin-bottom: 16px;
+  }
+
+  .origin-story p:last-child { margin-bottom: 0; }
+
+  .origin-story blockquote {
+    border-left: 3px solid var(--navy);
+    margin: 20px 0;
+    padding: 12px 0 12px 24px;
+    font-size: 15px;
+    line-height: 1.75;
+    color: var(--muted);
+    font-style: italic;
+    max-width: 640px;
+  }
+
+  .origin-story a {
+    color: var(--blue);
+    text-decoration: none;
+  }
+
+  .origin-story a:hover { text-decoration: underline; }
+
+  /* ── Callout ── */
+  .callout {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: var(--soft);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-bottom: 36px;
+    text-decoration: none;
+    transition: border-color 0.15s, background 0.15s;
+  }
+
+  .callout:hover {
+    border-color: var(--blue);
+    background: #edf2f8;
+  }
+
+  .callout-icon {
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  .callout-text {
+    font-size: 14px;
+    color: var(--ink);
+    line-height: 1.5;
+    flex: 1;
+  }
+
+  .callout-arrow {
+    color: var(--muted);
+    font-size: 16px;
+    flex-shrink: 0;
+    transition: transform 0.15s, color 0.15s;
+  }
+
+  .callout:hover .callout-arrow {
+    transform: translateX(3px);
+    color: var(--blue);
+  }
+
+  /* ── Dashboard List ── */
   .dashboard-list {
     display: flex;
     flex-direction: column;
@@ -87,8 +193,8 @@
     display: flex;
     align-items: center;
     gap: 16px;
-    background: var(--surface);
-    border: 1px solid var(--border);
+    background: #fff;
+    border: 1px solid var(--line);
     border-radius: 8px;
     padding: 16px 20px;
     text-decoration: none;
@@ -104,20 +210,20 @@
     font-family: 'IBM Plex Mono', monospace;
     font-size: 13px;
     font-weight: 600;
-    color: var(--text-bright);
+    color: var(--navy);
     min-width: 70px;
   }
 
   .entry-date {
     font-family: 'IBM Plex Mono', monospace;
     font-size: 13px;
-    color: var(--text-muted);
+    color: var(--muted);
     min-width: 110px;
   }
 
   .entry-desc {
     font-size: 14px;
-    color: var(--text);
+    color: var(--ink);
     flex: 1;
   }
 
@@ -133,25 +239,25 @@
   }
 
   .status-red {
-    background: var(--red-dim);
+    background: var(--red-bg);
     color: var(--red);
-    border: 1px solid rgba(192,57,43,0.28);
+    border: 1px solid var(--red-border);
   }
 
   .status-amber {
-    background: var(--amber-dim);
+    background: var(--amber-bg);
     color: var(--amber);
-    border: 1px solid rgba(176,111,14,0.28);
+    border: 1px solid var(--amber-border);
   }
 
   .status-green {
-    background: var(--green-dim);
+    background: var(--green-bg);
     color: var(--green);
-    border: 1px solid rgba(31,122,90,0.25);
+    border: 1px solid var(--green-border);
   }
 
   .arrow {
-    color: var(--text-muted);
+    color: var(--muted);
     font-size: 16px;
     transition: transform 0.15s, color 0.15s;
   }
@@ -163,103 +269,19 @@
 
   /* ── Footer ── */
   .footer {
-    margin-top: 52px;
-    padding-top: 24px;
-    border-top: 1px solid var(--border);
+    margin-top: 44px;
+    padding-top: 22px;
+    border-top: 1px solid var(--line);
     font-family: 'IBM Plex Mono', monospace;
     font-size: 11px;
-    color: var(--text-muted);
+    color: var(--muted);
     line-height: 1.6;
   }
 
-  .footer a {
-    color: var(--blue);
-    text-decoration: none;
-  }
-
+  .footer a { color: var(--blue); text-decoration: none; }
   .footer a:hover { text-decoration: underline; }
 
-  /* ── Callout ── */
-  .callout {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    background: var(--soft);
-    border: 1px solid var(--border);
-    border-left: 4px solid var(--blue);
-    border-radius: 0 8px 8px 0;
-    padding: 16px 20px;
-    margin-bottom: 40px;
-    text-decoration: none;
-    transition: border-color 0.15s, background 0.15s;
-  }
-
-  .callout:hover {
-    border-color: var(--blue);
-    background: #eef3f9;
-  }
-
-  .callout-icon {
-    font-size: 18px;
-    flex-shrink: 0;
-  }
-
-  .callout-text {
-    font-size: 14px;
-    color: var(--text);
-    line-height: 1.5;
-    flex: 1;
-  }
-
-  .callout-arrow {
-    color: var(--text-muted);
-    font-size: 16px;
-    flex-shrink: 0;
-    transition: transform 0.15s, color 0.15s;
-  }
-
-  .callout:hover .callout-arrow {
-    transform: translateX(3px);
-    color: var(--blue);
-  }
-
-  /* ── Origin Story ── */
-  .origin-story {
-    margin-bottom: 44px;
-    padding-bottom: 30px;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .origin-story p {
-    font-size: 15px;
-    line-height: 1.75;
-    color: var(--text);
-    max-width: 640px;
-    margin-bottom: 16px;
-  }
-
-  .origin-story p:last-child { margin-bottom: 0; }
-
-  .origin-story blockquote {
-    border-left: 3px solid var(--blue);
-    margin: 20px 0;
-    padding: 12px 0 12px 24px;
-    font-size: 15px;
-    line-height: 1.75;
-    color: var(--text-muted);
-    font-style: italic;
-    max-width: 640px;
-  }
-
-  .origin-story a {
-    color: var(--blue);
-    text-decoration: none;
-  }
-
-  .origin-story a:hover { text-decoration: underline; }
-
   @media (max-width: 600px) {
-    .page { padding: 34px 22px 40px; }
     h1 { font-size: 24px; }
     .dashboard-entry { flex-wrap: wrap; gap: 8px; }
     .entry-desc { min-width: 100%; order: 4; }
@@ -268,6 +290,8 @@
 </head>
 <body>
 <div class="page">
+
+  <a class="back-link" href="../index.html">← Agent Fleet</a>
 
   <div class="agent-label">Agent: Matthew</div>
   <h1>Dollar-Liquidity Stress Monitor</h1>
