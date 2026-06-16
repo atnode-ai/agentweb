@@ -5,47 +5,57 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Matthew — Architecture</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #0a0e14;
-    --surface: #111820;
-    --border: #1e2a38;
-    --text: #c8d3df;
-    --text-muted: #6b7d93;
-    --text-bright: #e8edf3;
-    --red: #e74856;
-    --red-dim: rgba(231, 72, 86, 0.15);
-    --amber: #f5a623;
-    --green: #27c93f;
-    --blue: #4a9eff;
-    --cyan: #56d4c0;
+    --navy: #0f2a4a;
+    --blue: #1f5fa8;
+    --ink: #1a2230;
+    --muted: #5b6776;
+    --line: #e2e7ee;
+    --soft: #f4f6f9;
+    --bg: #e7eaef;
+    --red: #c0392b;
+    --red-bg: #fdf0ef;
+    --purple: #6b4c8a;
+    --purple-bg: #f5f0f9;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   body {
     background: var(--bg);
-    color: var(--text);
-    font-family: 'IBM Plex Sans', -apple-system, sans-serif;
-    min-height: 100vh;
+    color: var(--ink);
+    font-family: 'Inter', -apple-system, system-ui, sans-serif;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    padding: 0 0 60px;
   }
+
+  a { color: inherit; }
 
   .page {
-    max-width: 780px;
-    margin: 0 auto;
-    padding: 48px 40px 80px;
+    width: min(820px, 94vw);
+    background: #fff;
+    margin: 34px auto 0;
+    padding: 46px 56px 50px;
+    border-top: 4px solid var(--navy);
+    box-shadow: 0 2px 26px rgba(15,42,74,.11);
   }
 
+  @media (max-width: 600px) { .page { padding: 34px 24px 40px; } }
+
+  /* ── Navigation ── */
   .back-link {
     font-family: 'IBM Plex Mono', monospace;
     font-size: 12px;
-    color: var(--text-muted);
+    color: var(--muted);
     text-decoration: none;
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    margin-bottom: 32px;
+    margin-bottom: 28px;
   }
 
   .back-link:hover { color: var(--blue); }
@@ -53,25 +63,26 @@
   .agent-label {
     font-family: 'IBM Plex Mono', monospace;
     font-size: 11px;
-    font-weight: 500;
+    font-weight: 600;
     letter-spacing: 2.5px;
     text-transform: uppercase;
-    color: var(--text-muted);
+    color: var(--blue);
     margin-bottom: 8px;
   }
 
   h1 {
-    font-size: 28px;
-    font-weight: 700;
-    color: var(--text-bright);
-    letter-spacing: -0.3px;
+    font-size: 30px;
+    font-weight: 800;
+    color: var(--navy);
+    letter-spacing: -.02em;
     margin-bottom: 32px;
   }
 
+  /* ── Content ── */
   .content p {
     font-size: 15px;
     line-height: 1.8;
-    color: var(--text);
+    color: var(--ink);
     margin-bottom: 20px;
     max-width: 680px;
   }
@@ -82,11 +93,11 @@
     font-weight: 600;
     letter-spacing: 2px;
     text-transform: uppercase;
-    color: var(--text-muted);
+    color: var(--blue);
     margin-top: 40px;
     margin-bottom: 16px;
     padding-top: 24px;
-    border-top: 1px solid var(--border);
+    border-top: 1px solid var(--line);
   }
 
   .content h2:first-of-type {
@@ -95,14 +106,20 @@
     border-top: none;
   }
 
-  .content strong { color: var(--text-bright); font-weight: 600; }
+  .content strong { color: var(--navy); font-weight: 700; }
 
-  .content a {
-    color: var(--blue);
-    text-decoration: none;
-  }
-
+  .content a { color: var(--blue); text-decoration: none; }
   .content a:hover { text-decoration: underline; }
+
+  .content code {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    background: var(--soft);
+    border: 1px solid var(--line);
+    padding: 2px 6px;
+    border-radius: 3px;
+    color: var(--navy);
+  }
 
   /* ── Metric Grid ── */
   .metric-grid {
@@ -113,8 +130,8 @@
   }
 
   .metric-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
+    background: var(--soft);
+    border: 1px solid var(--line);
     border-radius: 6px;
     padding: 14px 16px;
   }
@@ -122,17 +139,17 @@
   .metric-card .label {
     font-family: 'IBM Plex Mono', monospace;
     font-size: 10px;
-    font-weight: 500;
+    font-weight: 600;
     letter-spacing: 1px;
     text-transform: uppercase;
-    color: var(--text-muted);
-    margin-bottom: 4px;
+    color: var(--blue);
+    margin-bottom: 6px;
   }
 
   .metric-card .value {
-    font-size: 14px;
-    color: var(--text-bright);
-    font-weight: 500;
+    font-size: 13px;
+    color: var(--ink);
+    line-height: 1.5;
   }
 
   /* ── Threshold Table ── */
@@ -146,41 +163,42 @@
   .threshold-table th {
     font-family: 'IBM Plex Mono', monospace;
     font-size: 10px;
-    font-weight: 500;
+    font-weight: 600;
     letter-spacing: 1px;
     text-transform: uppercase;
-    color: var(--text-muted);
+    color: var(--muted);
     text-align: left;
     padding: 8px 10px;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 2px solid var(--navy);
   }
 
   .threshold-table td {
     padding: 8px 10px;
-    border-bottom: 1px solid var(--border);
-    color: var(--text);
+    border-bottom: 1px solid var(--line);
+    color: var(--ink);
   }
 
   .threshold-table tr:last-child td { border-bottom: none; }
 
-  .threshold-table .tag {
+  .tag {
     font-family: 'IBM Plex Mono', monospace;
     font-size: 10px;
+    font-weight: 600;
     padding: 2px 6px;
     border-radius: 3px;
   }
 
-  .tag-us { background: rgba(74,158,255,0.12); color: var(--blue); }
-  .tag-jp { background: rgba(180,142,173,0.15); color: #b48ead; }
+  .tag-us { background: rgba(31,95,168,0.1); color: var(--blue); }
+  .tag-jp { background: var(--purple-bg); color: var(--purple); }
 
   /* ── Footer ── */
   .footer {
-    margin-top: 60px;
-    padding-top: 24px;
-    border-top: 1px solid var(--border);
+    margin-top: 44px;
+    padding-top: 22px;
+    border-top: 1px solid var(--line);
     font-family: 'IBM Plex Mono', monospace;
     font-size: 11px;
-    color: var(--text-muted);
+    color: var(--muted);
     line-height: 1.6;
   }
 
@@ -188,7 +206,6 @@
   .footer a:hover { text-decoration: underline; }
 
   @media (max-width: 600px) {
-    .page { padding: 24px 20px 60px; }
     h1 { font-size: 22px; }
     .metric-grid { grid-template-columns: 1fr; }
   }
