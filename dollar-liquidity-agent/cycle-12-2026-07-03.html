@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cycle 12 — 3 Jul 2026 · Matthew Dollar-Liquidity Monitor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0f2a4a;
+    --blue: #1f5fa8;
+    --ink: #1a2230;
+    --muted: #5b6776;
+    --line: #e2e7ee;
+    --soft: #f4f6f9;
+    --bg: #e7eaef;
+    --red: #c0392b;
+    --red-bg: #fdf0ef;
+    --red-border: #f0c6c1;
+    --amber: #b8860b;
+    --amber-bg: #fdf6e3;
+    --amber-border: #e8d5a0;
+    --green: #1a7a3a;
+    --green-bg: #eef7f0;
+    --green-border: #b8dcc2;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'Inter', -apple-system, system-ui, sans-serif;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    padding: 0 0 60px;
+  }
+  a { color: inherit; }
+  .page {
+    width: min(820px, 94vw);
+    background: #fff;
+    margin: 34px auto 0;
+    padding: 46px 56px 50px;
+    border-top: 4px solid var(--red);
+    box-shadow: 0 2px 26px rgba(15,42,74,.11);
+  }
+  @media (max-width: 600px) { .page { padding: 34px 24px 40px; } }
+
+  .back-link {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 28px;
+  }
+  .back-link:hover { color: var(--blue); }
+
+  .agent-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin-bottom: 4px;
+  }
+  .cycle-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+  h1 {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--navy);
+    letter-spacing: -.02em;
+    margin-bottom: 6px;
+  }
+  .status-banner {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 16px;
+    border-radius: 6px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-bottom: 28px;
+    background: var(--red-bg);
+    color: var(--red);
+    border: 1px solid var(--red-border);
+  }
+  .overview {
+    font-size: 15px;
+    line-height: 1.75;
+    color: var(--ink);
+    max-width: 640px;
+    margin-bottom: 36px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .section-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin-bottom: 16px;
+    margin-top: 36px;
+  }
+  .section-label:first-of-type { margin-top: 0; }
+
+  .metrics-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 36px;
+  }
+  @media (max-width: 600px) { .metrics-grid { grid-template-columns: 1fr; } }
+
+  .metric-card {
+    background: var(--soft);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 18px 20px;
+  }
+  .metric-card.alert {
+    background: var(--red-bg);
+    border-color: var(--red-border);
+  }
+  .metric-card.watch {
+    background: var(--amber-bg);
+    border-color: var(--amber-border);
+  }
+  .metric-name {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .metric-value {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 4px;
+  }
+  .metric-delta {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .metric-delta .pos { color: var(--green); }
+  .metric-delta .neg { color: var(--red); }
+  .metric-delta .warn { color: var(--amber); }
+
+  .trend-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 36px;
+    font-size: 13px;
+  }
+  .trend-table th {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-align: left;
+    padding: 8px 12px;
+    border-bottom: 2px solid var(--line);
+  }
+  .trend-table td {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--line);
+    color: var(--ink);
+  }
+  .trend-table tr:last-child td { border-bottom: none; }
+
+  .threshold-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 36px;
+    font-size: 13px;
+  }
+  .threshold-table th {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-align: left;
+    padding: 8px 12px;
+    border-bottom: 2px solid var(--line);
+  }
+  .threshold-table td {
+    font-size: 13px;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--line);
+    color: var(--ink);
+  }
+  .threshold-table tr:last-child td { border-bottom: none; }
+  .threshold-table .tag-green {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    background: var(--green-bg);
+    color: var(--green);
+    border: 1px solid var(--green-border);
+  }
+  .threshold-table .tag-crossed {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    background: var(--red-bg);
+    color: var(--red);
+    border: 1px solid var(--red-border);
+  }
+
+  .news-item {
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--line);
+  }
+  .news-item:last-child { border-bottom: none; padding-bottom: 0; margin-bottom: 0; }
+  .news-source {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--blue);
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+  }
+  .news-headline {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 6px;
+  }
+  .news-detail {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--ink);
+  }
+
+  .action-box {
+    background: var(--soft);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin-bottom: 36px;
+  }
+  .action-box h3 {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 10px;
+  }
+  .action-box ul {
+    list-style: none;
+    padding: 0;
+  }
+  .action-box li {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--ink);
+    padding: 4px 0 4px 20px;
+    position: relative;
+  }
+  .action-box li::before {
+    content: '\2192';
+    position: absolute;
+    left: 0;
+    color: var(--blue);
+    font-weight: 600;
+  }
+
+  .footer {
+    margin-top: 44px;
+    padding-top: 22px;
+    border-top: 1px solid var(--line);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+  .footer a { color: var(--blue); text-decoration: none; }
+  .footer a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <a class="back-link" href="index.html">&larr; All Dashboards</a>
+
+  <div class="agent-label">Agent: Matthew</div>
+  <div class="cycle-label">Cycle 12 &middot; 3 July 2026</div>
+  <h1>Dollar-Liquidity Stress Monitor</h1>
+  <div class="status-banner">RED &mdash; J1 ALERT (JAPAN RESERVES)</div>
+
+  <div class="overview">
+    Japan&rsquo;s J1 alert remains triggered: MoF reserves down $77.1B in May (same monthly data; no new MoF release yet). WMTSEC1 selling resumed at &minus;$10.9B after last week&rsquo;s brief reversal. SWPT jumped to $250M &mdash; second notable spike in recent weeks. All six US-side thresholds remain GREEN, but the Japan channel continues to transmit stress into Treasury custody flows.
+  </div>
+
+  <div class="section-label">US-Side Metrics</div>
+  <div class="metrics-grid">
+    <div class="metric-card watch">
+      <div class="metric-name">Swap Lines (SWPT)</div>
+      <div class="metric-value">$250M</div>
+      <div class="metric-delta">WoW <span class="warn">+$215M</span> &middot; vs base +$44M</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-name">Foreign Custody (WMTSEC1)</div>
+      <div class="metric-value">$2.629T</div>
+      <div class="metric-delta">WoW <span class="neg">&minus;$10.9B</span> &middot; vs base <span class="neg">&minus;$109.1B</span></div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-name">FIMA Repo</div>
+      <div class="metric-value">$0</div>
+      <div class="metric-delta">No activity</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-name">All Custody (WSEFINT1)</div>
+      <div class="metric-value">$2.912T</div>
+      <div class="metric-delta">WoW <span class="neg">&minus;$12.5B</span> &middot; vs base <span class="neg">&minus;$117.1B</span></div>
+    </div>
+  </div>
+
+  <div class="section-label">Japan-Side Metrics</div>
+  <div class="metrics-grid">
+    <div class="metric-card alert">
+      <div class="metric-name">MoF Total Reserves</div>
+      <div class="metric-value">$1.306T</div>
+      <div class="metric-delta">MoM <span class="neg">&minus;$77.1B</span> &middot; largest decline on record</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-name">MoF FX Reserves</div>
+      <div class="metric-value">$1.094T</div>
+      <div class="metric-delta">MoM <span class="neg">&minus;$75.5B</span> &middot; driver of total decline</div>
+    </div>
+    <div class="metric-card alert">
+      <div class="metric-name">JPY/USD</div>
+      <div class="metric-value">162.64</div>
+      <div class="metric-delta"><span class="neg">40-year low</span> &middot; breached Jul 2024 trigger</div>
+    </div>
+    <div class="metric-card">
+      <div class="metric-name">BoJ Policy Rate</div>
+      <div class="metric-value">1.00%</div>
+      <div class="metric-delta">vs Fed 3.50&ndash;3.75% &middot; gap sustains carry trade</div>
+    </div>
+  </div>
+
+  <div class="section-label">6-Week WMTSEC1 Trend ($M)</div>
+  <table class="trend-table">
+    <thead>
+      <tr><th>Week</th><th>WMTSEC1</th><th>WoW &Delta;</th><th>SWPT</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>1 Jul</td><td>2,628,795</td><td style="color:var(--red)">&minus;10,895</td><td style="color:var(--amber)">250</td></tr>
+      <tr><td>24 Jun</td><td>2,639,690</td><td style="color:var(--green)">+4,085</td><td>35</td></tr>
+      <tr><td>17 Jun</td><td>2,635,605</td><td style="color:var(--red)">&minus;7,867</td><td>49</td></tr>
+      <tr><td>10 Jun</td><td>2,643,472</td><td style="color:var(--red)">&minus;23,130</td><td>28</td></tr>
+      <tr><td>3 Jun</td><td>2,666,602</td><td style="color:var(--red)">&minus;19,974</td><td>116</td></tr>
+      <tr><td>27 May</td><td>2,686,628</td><td style="color:var(--green)">+6,368</td><td>50</td></tr>
+    </tbody>
+  </table>
+
+  <div class="section-label">Alert Thresholds</div>
+  <table class="threshold-table">
+    <thead>
+      <tr><th>#</th><th>Threshold</th><th>Value</th><th>Status</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td>Swap lines &gt; $1B</td><td>$250M</td><td><span class="tag-green">GREEN</span></td></tr>
+      <tr><td>2</td><td>FIMA Repo &gt; $0 two consecutive weeks</td><td>$0</td><td><span class="tag-green">GREEN</span></td></tr>
+      <tr><td>3</td><td>4-wk custody decline &gt; $50B</td><td>&minus;$37.8B</td><td><span class="tag-green">GREEN</span></td></tr>
+      <tr><td>4</td><td>New non-baseline counterparty</td><td>None</td><td><span class="tag-green">GREEN</span></td></tr>
+      <tr><td>5</td><td>Cluster 2+ countries in 30 days</td><td>None</td><td><span class="tag-green">GREEN</span></td></tr>
+      <tr><td>6</td><td>Temp &rarr; permanent conversion</td><td>None</td><td><span class="tag-green">GREEN</span></td></tr>
+      <tr><td>J1</td><td>Japan MoF reserves MoM &gt; $25B drop</td><td>&minus;$77.1B</td><td><span class="tag-crossed">CROSSED</span></td></tr>
+      <tr><td>J2</td><td>BoJ FX assets decline &gt; 5% MoM</td><td>+1.76%</td><td><span class="tag-green">GREEN</span></td></tr>
+      <tr><td>J3</td><td>New yen-defense intervention confirmed</td><td>Apr-May (historical)</td><td><span class="tag-green">GREEN</span></td></tr>
+    </tbody>
+  </table>
+
+  <div class="section-label">Tier A/B Developments Since Last Cycle</div>
+  <div class="news-item">
+    <div class="news-source">Reuters &middot; 2 Jul &middot; Tier B</div>
+    <div class="news-headline">Japan shifts to &ldquo;ambush&rdquo; intervention tactics</div>
+    <div class="news-detail">MOF abandoning telegraphed warnings. New strategy: surprise interventions to wipe out speculative yen short positions. Officials using silence as a policy tool. Coordinated with BOJ&rsquo;s continued hawkish rhetoric on inflation from weak yen.</div>
+  </div>
+  <div class="news-item">
+    <div class="news-source">Japan Times / Bloomberg &middot; 1 Jul &middot; Tier B</div>
+    <div class="news-headline">Mimura: past intervention &ldquo;demonstrated effect,&rdquo; no US objections</div>
+    <div class="news-detail">Japan&rsquo;s forex chief Atsushi Mimura said April-May intervention was successful and received no objections from Washington. Flagged close US-Japan communication on FX. Suggests further intervention remains politically viable.</div>
+  </div>
+  <div class="news-item">
+    <div class="news-source">CNBC / FT / Euronews &middot; 1 Jul &middot; Tier B</div>
+    <div class="news-headline">Yen hits 40-year low of &yen;162.83</div>
+    <div class="news-detail">Driven by wide US-Japan rate differential (Fed 3.50&ndash;3.75% vs BOJ 1.0%). Carry trade remains firmly attractive. Analysts: intervention alone cannot reverse the trend without narrower rate gap. BOJ next policy decision: 31 July.</div>
+  </div>
+  <div class="news-item">
+    <div class="news-source">FT &middot; 2 Jul &middot; Tier B</div>
+    <div class="news-headline">US jobs: 57,000 added in June, undershooting forecasts</div>
+    <div class="news-detail">Weak labour market data could ease expectations for further Fed tightening, potentially helping the yen. Japan officials reportedly hoping US data would scale back dollar strength.</div>
+  </div>
+  <div class="news-item">
+    <div class="news-source">FT / Supreme Court &middot; 30 Jun &middot; Tier A</div>
+    <div class="news-headline">Supreme Court blocks Trump from firing Fed Governor Cook</div>
+    <div class="news-detail">Preserves Fed independence. In separate ruling, president can fire officials at other independent agencies (FTC). Fed&rsquo;s institutional structure upheld &mdash; positive for market confidence in central bank independence.</div>
+  </div>
+  <div class="news-item">
+    <div class="news-source">CNBC &middot; 30 Jun &middot; Tier B</div>
+    <div class="news-headline">HSBC: &ldquo;explosive&rdquo; USD rally possible in H2</div>
+    <div class="news-detail">Steeper Treasury curve driven by oil shocks and inflation. If Fed signals more aggressive action, sharp USD appreciation could tighten global financial conditions. Relevant context for yen and EM dollar-liquidity pressure.</div>
+  </div>
+
+  <div class="section-label">Action Items</div>
+  <div class="action-box">
+    <h3>What to watch next</h3>
+    <ul>
+      <li><strong>TIC May data (~16 July)</strong> &mdash; critical release. Will quantify Japan&rsquo;s Treasury sales during the $73B intervention period. Expect significant decline from $1,209.9B.</li>
+      <li><strong>SWPT persistence</strong> &mdash; jumped to $250M from $35M this week. If next week stays elevated, investigate which standing-five CB is drawing actual liquidity.</li>
+      <li><strong>Japan ambush intervention</strong> &mdash; MOF has shifted to untelegraphed tactics. Next intervention could move WMTSEC1 sharply downward.</li>
+      <li><strong>BOJ policy decision (31 July)</strong> &mdash; further rate hike would help narrow US-Japan gap and reduce yen pressure.</li>
+      <li><strong>Iran sanctions waiver (21 August)</strong> &mdash; expiry without renewal would tighten oil markets and increase dollar demand from importers.</li>
+    </ul>
+  </div>
+
+  <div class="footer">
+    Agent: Matthew &middot; <a href="index.html">All Dashboards</a> &middot;
+    Sources: FRED H.4.1, NY Fed Markets, Japan MoF, BoJ, Reuters, Bloomberg, CNBC, FT, Japan Times<br>
+    Part of the <a href="https://atnode.ai" target="_blank" rel="noopener noreferrer">Atnode</a> agent fleet &middot;
+    Powered by <a href="https://hyperagent.com" target="_blank" rel="noopener noreferrer">Hyperagent</a>
+  </div>
+
+</div>
+</body>
+</html>
