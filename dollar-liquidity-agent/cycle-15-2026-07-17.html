@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cycle 15 — Weekly Report — Dollar-Liquidity Stress Monitor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0f2a4a;
+    --blue: #1f5fa8;
+    --ink: #1a2230;
+    --muted: #5b6776;
+    --line: #e2e7ee;
+    --soft: #f4f6f9;
+    --bg: #e7eaef;
+
+    --red: #c0392b;
+    --red-bg: #fbeae7;
+    --red-border: #eecbc3;
+
+    --amber: #b8860b;
+    --amber-bg: #fbf3e0;
+    --amber-border: #eeddb0;
+
+    --green: #1a7a3a;
+    --green-bg: #e8f5ec;
+    --green-border: #c3e3cd;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    font-family: 'Inter', -apple-system, sans-serif;
+    color: var(--ink);
+    padding: 32px 0 64px;
+  }
+
+  .page {
+    width: min(820px, 94vw);
+    margin: 0 auto;
+    background: #fff;
+    border-top: 4px solid var(--navy);
+    padding: 46px 56px;
+    box-shadow: 0 1px 3px rgba(15, 42, 74, 0.08), 0 8px 24px rgba(15, 42, 74, 0.06);
+  }
+
+  /* Header */
+  .back-link {
+    display: inline-block;
+    font-size: 12.5px;
+    color: var(--muted);
+    text-decoration: none;
+    margin-bottom: 22px;
+    font-weight: 500;
+  }
+  .back-link:hover { color: var(--blue); }
+
+  .header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 6px;
+  }
+
+  .agent-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11.5px;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    font-weight: 500;
+  }
+
+  h1 {
+    font-size: 27px;
+    font-weight: 800;
+    color: var(--navy);
+    margin: 4px 0 6px;
+    letter-spacing: -0.01em;
+  }
+
+  .meta-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 22px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .date-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .status-badge {
+    display: inline-block;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12.5px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    padding: 5px 14px;
+    border-radius: 4px;
+  }
+  .status-green {
+    background: var(--green-bg);
+    color: var(--green);
+    border: 1px solid var(--green-border);
+  }
+
+  /* Section labels */
+  .section-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11.5px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: var(--blue);
+    text-transform: uppercase;
+    margin: 40px 0 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--line);
+  }
+  .section-label:first-of-type { margin-top: 34px; }
+
+  /* Tables */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+    margin-bottom: 8px;
+  }
+  thead th {
+    text-align: left;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--muted);
+    background: var(--soft);
+    padding: 9px 12px;
+    border: 1px solid var(--line);
+  }
+  tbody td {
+    padding: 9px 12px;
+    border: 1px solid var(--line);
+    color: var(--ink);
+  }
+  tbody tr:nth-child(even) {
+    background: var(--soft);
+  }
+  tbody td.metric-name {
+    font-weight: 600;
+    color: var(--navy);
+  }
+  td.num, th.num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+  }
+  td.neg { color: var(--red); }
+  td.pos { color: var(--green); }
+  td.na { color: var(--muted); }
+
+  /* Threshold table status highlight */
+  tr.watch-row {
+    background: var(--amber-bg) !important;
+  }
+  tr.watch-row td {
+    border-color: var(--amber-border);
+  }
+  .status-clear {
+    color: var(--green);
+    font-weight: 600;
+  }
+  .status-watch {
+    color: var(--amber);
+    font-weight: 600;
+  }
+
+  /* Sparkline / bar chart */
+  .chart-wrap {
+    display: flex;
+    align-items: flex-end;
+    gap: 18px;
+    height: 140px;
+    padding: 20px 10px 0;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: var(--soft);
+  }
+  .bar-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    flex: 1;
+    height: 100%;
+  }
+  .bar-value {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 6px;
+  }
+  .bar {
+    width: 100%;
+    max-width: 42px;
+    background: linear-gradient(180deg, var(--blue), var(--navy));
+    border-radius: 3px 3px 0 0;
+  }
+  .bar-date {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10.5px;
+    color: var(--muted);
+    margin-top: 8px;
+    white-space: nowrap;
+  }
+  .chart-caption {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 8px;
+    font-style: italic;
+  }
+
+  /* Key line box */
+  .key-line {
+    background: var(--soft);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--blue);
+    padding: 12px 16px;
+    font-size: 13.5px;
+    margin-bottom: 14px;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+  .key-line strong { color: var(--navy); }
+
+  /* News list */
+  ul.news-list {
+    margin: 0;
+    padding-left: 20px;
+  }
+  ul.news-list li {
+    margin-bottom: 9px;
+    font-size: 13.5px;
+    line-height: 1.55;
+  }
+  ul.news-list li strong { color: var(--navy); }
+
+  /* Assessment */
+  .assessment-box {
+    background: var(--soft);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 18px 20px;
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--ink);
+  }
+
+  /* Action items */
+  ul.action-list {
+    margin: 0;
+    padding-left: 20px;
+  }
+  ul.action-list li {
+    margin-bottom: 8px;
+    font-size: 13.5px;
+    line-height: 1.55;
+  }
+
+  /* Footer */
+  .footer {
+    margin-top: 44px;
+    padding-top: 18px;
+    border-top: 1px solid var(--line);
+    font-size: 11.5px;
+    color: var(--muted);
+    text-align: center;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <a class="back-link" href="index.html">&larr; Dashboard Index</a>
+
+  <div class="header-row">
+    <div>
+      <div class="agent-label">AGENT: MATTHEW</div>
+      <h1>Cycle 15 — Weekly Report</h1>
+    </div>
+  </div>
+
+  <div class="meta-row">
+    <div class="date-label">17 July 2026</div>
+    <span class="status-badge status-green">GREEN</span>
+  </div>
+
+  <!-- US-SIDE METRICS -->
+  <div class="section-label">US-Side Metrics</div>
+  <table>
+    <thead>
+      <tr>
+        <th>Metric</th>
+        <th class="num">Value</th>
+        <th class="num">WoW Δ</th>
+        <th class="num">vs Baseline</th>
+        <th class="num">4-wk MoM</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="metric-name">SWPT (swap lines)</td>
+        <td class="num">$135M</td>
+        <td class="num neg">−$35M</td>
+        <td class="num neg">−$71M</td>
+        <td class="num na">—</td>
+      </tr>
+      <tr>
+        <td class="metric-name">WMTSEC1 (foreign custody)</td>
+        <td class="num">$2.590T</td>
+        <td class="num neg">−$28.8B</td>
+        <td class="num neg">−$147.5B</td>
+        <td class="num neg">−$45.2B</td>
+      </tr>
+      <tr>
+        <td class="metric-name">WSEFINT1 (all custody)</td>
+        <td class="num">$2.874T</td>
+        <td class="num neg">−$28.7B</td>
+        <td class="num neg">−$155.4B</td>
+        <td class="num na">—</td>
+      </tr>
+      <tr>
+        <td class="metric-name">FIMA Repo</td>
+        <td class="num">$0</td>
+        <td class="num na">—</td>
+        <td class="num na">—</td>
+        <td class="num na">—</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- CUSTODY TREND -->
+  <div class="section-label">Custody Trend (6 Weeks)</div>
+  <div class="chart-wrap">
+    <div class="bar-col">
+      <div class="bar-value">2,643</div>
+      <div class="bar" style="height: 90%;"></div>
+      <div class="bar-date">Jun 10</div>
+    </div>
+    <div class="bar-col">
+      <div class="bar-value">2,636</div>
+      <div class="bar" style="height: 86.9%;"></div>
+      <div class="bar-date">Jun 17</div>
+    </div>
+    <div class="bar-col">
+      <div class="bar-value">2,640</div>
+      <div class="bar" style="height: 88.6%;"></div>
+      <div class="bar-date">Jun 24</div>
+    </div>
+    <div class="bar-col">
+      <div class="bar-value">2,629</div>
+      <div class="bar" style="height: 83.7%;"></div>
+      <div class="bar-date">Jul 1</div>
+    </div>
+    <div class="bar-col">
+      <div class="bar-value">2,619</div>
+      <div class="bar" style="height: 79.4%;"></div>
+      <div class="bar-date">Jul 8</div>
+    </div>
+    <div class="bar-col">
+      <div class="bar-value">2,590</div>
+      <div class="bar" style="height: 67%;"></div>
+      <div class="bar-date">Jul 15</div>
+    </div>
+  </div>
+  <div class="chart-caption">WMTSEC1 foreign official custody holdings, $B, most recent week on the right.</div>
+
+  <!-- JAPAN-SIDE METRICS -->
+  <div class="section-label">Japan-Side Metrics</div>
+  <table>
+    <thead>
+      <tr>
+        <th>Metric</th>
+        <th class="num">Value</th>
+        <th class="num">MoM Δ</th>
+        <th class="num">vs Baseline</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="metric-name">MoF total reserves</td>
+        <td class="num">$1.287T</td>
+        <td class="num neg">−$18.4B</td>
+        <td class="num neg">−$95.5B</td>
+      </tr>
+      <tr>
+        <td class="metric-name">MoF FX reserves</td>
+        <td class="num">$1.091T</td>
+        <td class="num neg">−$3.4B</td>
+        <td class="num neg">−$78.9B</td>
+      </tr>
+      <tr>
+        <td class="metric-name">BoJ FX assets</td>
+        <td class="num">¥11.95T</td>
+        <td class="num pos">+1.76%</td>
+        <td class="num pos">+2.0%</td>
+      </tr>
+      <tr>
+        <td class="metric-name">JPY/USD</td>
+        <td class="num">162.19</td>
+        <td class="num neg">−0.14%</td>
+        <td class="num pos">+3.31</td>
+      </tr>
+      <tr>
+        <td class="metric-name">Last intervention</td>
+        <td class="num">2024-07-01</td>
+        <td class="num na">—</td>
+        <td class="num na">—</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- TIC STATUS -->
+  <div class="section-label">TIC — May 2026 (Latest)</div>
+  <div class="key-line">
+    <strong>Grand Total:</strong> $9,371.1B (+$18.5B). &nbsp; <strong>Foreign Official:</strong> $3,848.0B (−$58.5B)
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>Notable Move</th>
+        <th class="num">Δ</th>
+        <th>Note</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="metric-name">Japan</td>
+        <td class="num neg">−$66.8B</td>
+        <td>Yen-defense driven</td>
+      </tr>
+      <tr>
+        <td class="metric-name">Canada</td>
+        <td class="num pos">+$38.7B</td>
+        <td>April reversal</td>
+      </tr>
+      <tr>
+        <td class="metric-name">China</td>
+        <td class="num pos">+$8.2B</td>
+        <td>—</td>
+      </tr>
+      <tr>
+        <td class="metric-name">UK</td>
+        <td class="num pos">+$11.1B</td>
+        <td>—</td>
+      </tr>
+      <tr>
+        <td class="metric-name">Foreign Official T-Bills</td>
+        <td class="num neg">−$61.1B</td>
+        <td>—</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ALERT THRESHOLDS -->
+  <div class="section-label">Alert Threshold Assessment</div>
+  <table>
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Threshold</th>
+        <th>Status</th>
+        <th class="num">Value</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="num">1</td>
+        <td>SWPT &gt;$1B WoW</td>
+        <td class="status-clear">✅ Clear</td>
+        <td class="num">$135M</td>
+      </tr>
+      <tr class="watch-row">
+        <td class="num">2</td>
+        <td>WMTSEC1 WoW &gt;$25B for 2+ weeks</td>
+        <td class="status-watch">⚠️ Watch</td>
+        <td class="num">−$28.8B (first week; need next week to confirm)</td>
+      </tr>
+      <tr>
+        <td class="num">3</td>
+        <td>WMTSEC1 4-wk MoM &gt;$50B</td>
+        <td class="status-clear">✅ Clear</td>
+        <td class="num">$45.2B</td>
+      </tr>
+      <tr>
+        <td class="num">4</td>
+        <td>FIMA Repo &gt;$5B</td>
+        <td class="status-clear">✅ Clear</td>
+        <td class="num">$0</td>
+      </tr>
+      <tr>
+        <td class="num">5</td>
+        <td>New swap-line (non-standing-5)</td>
+        <td class="status-clear">✅ Clear</td>
+        <td class="num">None</td>
+      </tr>
+      <tr>
+        <td class="num">6</td>
+        <td>Cluster 3+ requests / 30 days</td>
+        <td class="status-clear">✅ Clear</td>
+        <td class="num">None</td>
+      </tr>
+      <tr>
+        <td class="num">J1</td>
+        <td>MoF reserves MoM &gt;$30B</td>
+        <td class="status-clear">✅ Clear</td>
+        <td class="num">$18.4B</td>
+      </tr>
+      <tr>
+        <td class="num">J2</td>
+        <td>BoJ FX MoM &gt;5%</td>
+        <td class="status-clear">✅ Clear</td>
+        <td class="num">+1.76%</td>
+      </tr>
+      <tr>
+        <td class="num">J3</td>
+        <td>New intervention</td>
+        <td class="status-clear">✅ Clear</td>
+        <td class="num">None</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- NEWS SUMMARY -->
+  <div class="section-label">Tier A/B News (10–17 July)</div>
+  <ul class="news-list">
+    <li><strong>Warsh Congressional testimony (14–15 Jul):</strong> no emergency actions, 5 task forces announced</li>
+    <li><strong>Hormuz blockade reimposed (14 Jul, AP):</strong> transits at ~14/day vs 130–140 pre-war</li>
+    <li><strong>Bahrain received $5.5B UAE bilateral swap (Reuters):</strong> has NOT drawn on it</li>
+    <li><strong>PBoC +15t gold in June (WGC):</strong> 20th consecutive month</li>
+    <li><strong>ON RRP near zero ($151M–$545M, Reuters):</strong> money market plumbing normal</li>
+  </ul>
+
+  <!-- ASSESSMENT -->
+  <div class="section-label">Assessment</div>
+  <div class="assessment-box">
+    GREEN maintained. Financial plumbing quiet — no swap-line draws, no FIMA usage, money markets orderly. WMTSEC1 acceleration (−$28.8B WoW, up from −$9.6B) warrants attention but is a single data point; needs a second consecutive &gt;$25B week to trigger AMBER. Geopolitical backdrop fraught (Hormuz at ~14 transits/day) but not yet translating into dollar-funding stress. Japan's yen-defense pressure moderating — MoF pivoting toward GPIF repatriation.
+  </div>
+
+  <!-- ACTION ITEMS -->
+  <div class="section-label">Action Items</div>
+  <ul class="action-list">
+    <li>Watch next H.4.1 (~22 Jul) for threshold #2 confirmation</li>
+    <li>TIC June data (~18 Aug) first window for Gulf reaction to July re-escalation</li>
+    <li>Monitor Hormuz shipping for further deterioration</li>
+  </ul>
+
+  <div class="footer">
+    Part of the Atnode agent fleet · Data: Federal Reserve H.4.1, FRED, NY Fed, Japan MoF, TIC · Cycle 15 of 15
+  </div>
+
+</div>
+</body>
+</html>
