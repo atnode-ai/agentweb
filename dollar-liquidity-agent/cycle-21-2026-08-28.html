@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cycle 21 — Dollar Liquidity Monitor — 28 Aug 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0e17;
+  --surface: #111827;
+  --surface-2: #1a2332;
+  --border: #1e2d3d;
+  --text: #e2e8f0;
+  --text-dim: #8899aa;
+  --green: #22c55e;
+  --green-dim: rgba(34,197,94,0.12);
+  --amber: #f59e0b;
+  --amber-dim: rgba(245,158,11,0.12);
+  --red: #ef4444;
+  --blue: #3b82f6;
+  --blue-dim: rgba(59,130,246,0.12);
+  --purple: #a78bfa;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'IBM Plex Sans',system-ui,sans-serif; background:var(--bg); color:var(--text); padding:2rem; max-width:1200px; margin:0 auto; }
+.mono { font-family:'IBM Plex Mono',monospace; }
+.header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:2rem; padding-bottom:1.5rem; border-bottom:1px solid var(--border); }
+.header h1 { font-size:1.5rem; font-weight:700; letter-spacing:-0.02em; }
+.header .cycle { color:var(--text-dim); font-size:0.875rem; margin-top:0.25rem; }
+.status-badge { display:inline-flex; align-items:center; gap:0.5rem; padding:0.5rem 1rem; border-radius:6px; font-weight:600; font-size:0.9rem; }
+.status-green { background:var(--green-dim); color:var(--green); border:1px solid rgba(34,197,94,0.25); }
+.status-red { background:rgba(239,68,68,0.12); color:var(--red); border:1px solid rgba(239,68,68,0.25); }
+.grid { display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; margin-bottom:2rem; }
+.card { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:1.25rem; }
+.card-label { font-size:0.75rem; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:0.5rem; }
+.card-value { font-family:'IBM Plex Mono',monospace; font-size:1.5rem; font-weight:600; }
+.card-delta { font-size:0.8rem; margin-top:0.25rem; }
+.positive { color:var(--green); }
+.negative { color:var(--red); }
+.neutral { color:var(--text-dim); }
+.section { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:1.5rem; margin-bottom:1.5rem; }
+.section h2 { font-size:1rem; font-weight:600; margin-bottom:1rem; display:flex; align-items:center; gap:0.5rem; }
+table { width:100%; border-collapse:collapse; font-size:0.85rem; }
+th { text-align:left; padding:0.5rem 0.75rem; border-bottom:1px solid var(--border); color:var(--text-dim); font-weight:500; font-size:0.75rem; text-transform:uppercase; letter-spacing:0.04em; }
+td { padding:0.5rem 0.75rem; border-bottom:1px solid rgba(30,45,61,0.5); }
+tr:last-child td { border-bottom:none; }
+.trend { display:flex; align-items:flex-end; gap:3px; height:40px; margin-top:0.5rem; }
+.trend-bar { background:var(--blue); border-radius:2px 2px 0 0; min-width:8px; flex:1; transition:height 0.3s; }
+.news-item { padding:0.75rem 0; border-bottom:1px solid rgba(30,45,61,0.5); }
+.news-item:last-child { border-bottom:none; }
+.news-tier { font-size:0.7rem; padding:0.15rem 0.4rem; border-radius:3px; font-weight:600; margin-right:0.5rem; }
+.tier-a { background:rgba(34,197,94,0.15); color:var(--green); }
+.tier-b { background:rgba(59,130,246,0.15); color:var(--blue); }
+.tier-c { background:rgba(167,139,250,0.15); color:var(--purple); }
+.news-date { color:var(--text-dim); font-size:0.75rem; }
+.news-text { font-size:0.85rem; margin-top:0.25rem; line-height:1.5; }
+.alert-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:0.75rem; }
+.alert-item { background:var(--surface-2); border-radius:6px; padding:0.75rem; font-size:0.8rem; }
+.alert-status { display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:0.4rem; }
+.alert-status.green { background:var(--green); }
+.alert-status.amber { background:var(--amber); }
+.alert-status.red { background:var(--red); }
+.alert-name { font-weight:500; font-size:0.8rem; }
+.alert-val { color:var(--text-dim); font-size:0.75rem; margin-top:0.25rem; }
+.footer { text-align:center; color:var(--text-dim); font-size:0.75rem; margin-top:2rem; padding-top:1rem; border-top:1px solid var(--border); }
+@media(max-width:768px) { .grid { grid-template-columns:repeat(2,1fr); } .alert-grid { grid-template-columns:1fr 1fr; } body { padding:1rem; } }
+@media(max-width:480px) { .grid { grid-template-columns:1fr; } .alert-grid { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<div class="header">
+  <div>
+    <h1>Dollar Liquidity Monitor</h1>
+    <div class="cycle">Cycle 21 &mdash; 28 August 2026 &middot; H.4.1 data: 26 Aug</div>
+  </div>
+  <div class="status-badge status-red">&#x25CF; RED</div>
+</div>
+
+<div class="grid">
+  <div class="card">
+    <div class="card-label">Swap Lines (SWPT)</div>
+    <div class="card-value">$121M</div>
+    <div class="card-delta neutral">WoW &minus;$2M &middot; vs base &minus;$85M</div>
+    <div class="trend">
+      <div class="trend-bar" style="height:100%;" title="$378 — Jul 22"></div>
+      <div class="trend-bar" style="height:35%;" title="$132 — Jul 29"></div>
+      <div class="trend-bar" style="height:38%;" title="$145 — Aug 5"></div>
+      <div class="trend-bar" style="height:35%;" title="$132 — Aug 12"></div>
+      <div class="trend-bar" style="height:33%;" title="$123 — Aug 19"></div>
+      <div class="trend-bar" style="height:32%;" title="$121 — Aug 26 (latest)"></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-label">Foreign Custody (WMTSEC1)</div>
+    <div class="card-value">$2.602T</div>
+    <div class="card-delta positive">WoW +$9.8B &middot; vs base &minus;$136.0B</div>
+    <div class="trend">
+      <div class="trend-bar" style="height:20%;" title="$2.603T — Jul 22"></div>
+      <div class="trend-bar" style="height:85%;" title="$2.639T — Jul 29"></div>
+      <div class="trend-bar" style="height:100%;" title="$2.647T — Aug 5"></div>
+      <div class="trend-bar" style="height:31%;" title="$2.609T — Aug 12"></div>
+      <div class="trend-bar" style="height:1%;" title="$2.592T — Aug 19"></div>
+      <div class="trend-bar" style="height:18%;" title="$2.602T — Aug 26 (latest)"></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-label">All Custody (WSEFINT1)</div>
+    <div class="card-value">$2.878T</div>
+    <div class="card-delta positive">WoW +$7.2B &middot; vs base &minus;$150.9B</div>
+    <div class="trend">
+      <div class="trend-bar" style="height:25%;" title="$2.885T — Jul 22"></div>
+      <div class="trend-bar" style="height:85%;" title="$2.918T — Jul 29"></div>
+      <div class="trend-bar" style="height:100%;" title="$2.926T — Aug 5"></div>
+      <div class="trend-bar" style="height:31%;" title="$2.888T — Aug 12"></div>
+      <div class="trend-bar" style="height:1%;" title="$2.871T — Aug 19"></div>
+      <div class="trend-bar" style="height:13%;" title="$2.878T — Aug 26 (latest)"></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-label">FIMA Repo</div>
+    <div class="card-value">$0</div>
+    <div class="card-delta neutral">10th consecutive week at zero</div>
+    <div style="margin-top:0.75rem; font-size:0.75rem; color:var(--text-dim);">Japan using reverse repo, not FIMA</div>
+  </div>
+</div>
+
+<!-- Japan Side -->
+<div class="section">
+  <h2>&#x1F1EF;&#x1F1F5; Japan Side</h2>
+  <div class="grid" style="margin-bottom:0;">
+    <div style="background:var(--surface-2); border-radius:6px; padding:1rem;">
+      <div class="card-label">MoF Total Reserves</div>
+      <div class="card-value" style="font-size:1.25rem;">$1.287T</div>
+      <div class="card-delta negative">MoM &minus;$377M &middot; vs base &minus;$95.9B</div>
+    </div>
+    <div style="background:var(--surface-2); border-radius:6px; padding:1rem;">
+      <div class="card-label">FX Reserves</div>
+      <div class="card-value" style="font-size:1.25rem;">$1.090T</div>
+      <div class="card-delta negative">MoM &minus;$898M &middot; vs base &minus;$79.8B</div>
+    </div>
+    <div style="background:var(--surface-2); border-radius:6px; padding:1rem;">
+      <div class="card-label">JPY/USD</div>
+      <div class="card-value" style="font-size:1.25rem;">&yen;159.22</div>
+      <div class="card-delta neutral">Steady near 160 threshold</div>
+    </div>
+    <div style="background:var(--surface-2); border-radius:6px; padding:1rem;">
+      <div class="card-label">BoJ FX Assets</div>
+      <div class="card-value" style="font-size:1.25rem;">&yen;12.04T</div>
+      <div class="card-delta neutral">MoM +0.8%</div>
+    </div>
+  </div>
+  <div style="margin-top:0.75rem; font-size:0.8rem; color:var(--text-dim);">Bessent explicitly encouraged Japan to use swap lines rather than sell Treasuries (Reuters 27 Aug). If Japan shifts mechanism, expect SWPT spike while custody stabilises.</div>
+</div>
+
+<!-- TIC -->
+<div class="section">
+  <h2>&#x1F4CA; TIC June 2026 &mdash; Foreign Holdings</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Country</th>
+        <th>Holdings ($B)</th>
+        <th>Change ($B)</th>
+        <th>Direction</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Grand Total</td>
+        <td class="mono">$9,299.0B</td>
+        <td class="mono negative">&minus;$72.1B</td>
+        <td class="negative">&#x25BC; Negative</td>
+      </tr>
+      <tr>
+        <td>Foreign Official</td>
+        <td class="mono">$3,778.1B</td>
+        <td class="mono negative">&minus;$69.9B</td>
+        <td class="negative">&#x25BC; Negative</td>
+      </tr>
+      <tr>
+        <td>Japan</td>
+        <td class="mono">$1,116.7B</td>
+        <td class="mono negative">&minus;$26.4B</td>
+        <td class="negative">&#x25BC; Post-intervention selling confirmed</td>
+      </tr>
+      <tr>
+        <td>China</td>
+        <td class="mono">$633.4B</td>
+        <td class="mono negative">&minus;$25.9B</td>
+        <td class="negative">&#x25BC; Largest monthly decline in months</td>
+      </tr>
+      <tr>
+        <td>UK</td>
+        <td class="mono">$939.9B</td>
+        <td class="mono negative">&minus;$8.7B</td>
+        <td class="negative">&#x25BC; Negative</td>
+      </tr>
+      <tr>
+        <td>Cayman Islands</td>
+        <td class="mono">$453.1B</td>
+        <td class="mono negative">&minus;$18.2B</td>
+        <td class="negative">&#x25BC; Negative</td>
+      </tr>
+      <tr>
+        <td>Canada</td>
+        <td class="mono">$459.6B</td>
+        <td class="mono positive">+$23.8B</td>
+        <td class="positive">&#x25B2; Positive</td>
+      </tr>
+      <tr>
+        <td>Belgium</td>
+        <td class="mono">$482.5B</td>
+        <td class="mono positive">+$10.5B</td>
+        <td class="positive">&#x25B2; Positive (Euroclear custodial)</td>
+      </tr>
+    </tbody>
+  </table>
+  <div style="margin-top:0.75rem; font-size:0.8rem; color:var(--text-dim);">July TIC (expected ~18 Sep) will cover the US-Japan joint intervention period &mdash; expect significantly larger Japan decline.</div>
+</div>
+
+<!-- News -->
+<div class="section">
+  <h2>&#x1F4F0; Tier A/B News &mdash; 21&ndash;28 Aug 2026</h2>
+
+  <div class="news-item">
+    <span class="news-tier tier-b">B</span><span class="news-date">27 Aug &mdash; Reuters</span>
+    <div class="news-text"><strong>Bessent encouraged Japan to use swap lines over Treasury selling:</strong> Former IMF deputy Shinohara confirmed that US Treasury Secretary explicitly steered Japan toward dollar swap lines rather than liquidating Treasuries. Significant policy signal &mdash; could shift the transmission mechanism we monitor.</div>
+  </div>
+
+  <div class="news-item">
+    <span class="news-tier tier-b">B</span><span class="news-date">20 Aug &mdash; Nikkei Asia</span>
+    <div class="news-text"><strong>US Treasury buybacks put market on alert:</strong> Expanded debt-buyback operations interpreted as pre-positioning for further yen-support action. Yen fading back toward 160 post-intervention.</div>
+  </div>
+
+  <div class="news-item">
+    <span class="news-tier tier-b">B</span><span class="news-date">19 Aug &mdash; Xinhua</span>
+    <div class="news-text"><strong>PBOC-RBA swap line renewed and expanded:</strong> Five-year extension, ceiling raised from &yen;200B/A$41B to &yen;220B/A$46B. Not USD-relevant but adds to global swap-line expansion pattern.</div>
+  </div>
+</div>
+
+<!-- Alerts -->
+<div class="section">
+  <h2>&#x1F6E1;&#xFE0F; Alert Thresholds</h2>
+  <div class="alert-grid">
+    <div class="alert-item"><span class="alert-status green"></span><span class="alert-name">SWPT > $1B</span><div class="alert-val">$121M &mdash; clear</div></div>
+    <div class="alert-item"><span class="alert-status green"></span><span class="alert-name">FIMA > $0 (2 wks)</span><div class="alert-val">$0 &mdash; 10th straight week</div></div>
+    <div class="alert-item"><span class="alert-status amber"></span><span class="alert-name">4-wk custody > $50B</span><div class="alert-val">&minus;$45.3B &mdash; approaching threshold</div></div>
+    <div class="alert-item"><span class="alert-status green"></span><span class="alert-name">New counterparty</span><div class="alert-val">None &mdash; Pakistan pending (end-Sept)</div></div>
+    <div class="alert-item"><span class="alert-status green"></span><span class="alert-name">Cluster (2+ / 30d)</span><div class="alert-val">None &mdash; clear</div></div>
+    <div class="alert-item"><span class="alert-status green"></span><span class="alert-name">Temp &rarr; permanent</span><div class="alert-val">None &mdash; clear</div></div>
+    <div class="alert-item"><span class="alert-status amber"></span><span class="alert-name">J1: Reserves &lt;$1.25T</span><div class="alert-val">$1.287T (buffer: $37B)</div></div>
+    <div class="alert-item"><span class="alert-status green"></span><span class="alert-name">J2: MABJMA12 > 5%</span><div class="alert-val">+0.8% &mdash; clear</div></div>
+    <div class="alert-item"><span class="alert-status red"></span><span class="alert-name">J3: Intervention</span><div class="alert-val">Active &mdash; May + Jul interventions</div></div>
+  </div>
+</div>
+
+<!-- Watch Items -->
+<div class="section">
+  <h2>&#x1F441;&#xFE0F; Watch Items</h2>
+  <ul style="font-size:0.85rem; line-height:1.7; padding-left:1.25rem; color:var(--text-dim);">
+    <li><strong style="color:var(--amber);">4-wk custody decline:</strong> $45.3B, just under $50B threshold. If next week's WMTSEC1 drops, threshold #3 triggers.</li>
+    <li><strong style="color:var(--amber);">Bessent policy shift:</strong> Swap-line-over-selling directive could cause SWPT spike while custody stabilises. Watch for this divergence pattern.</li>
+    <li><strong style="color:var(--text);">July TIC (~18 Sep):</strong> Will cover the US-Japan joint intervention. Single most important upcoming data point.</li>
+    <li><strong style="color:var(--text);">Pakistan $10B ESF:</strong> Treasury response expected by end of September. 3&ndash;4 cycles remaining.</li>
+    <li><strong style="color:var(--text);">JPY/USD at 159.22:</strong> Fading back toward 160 post-intervention. Further weakening would pressure more intervention.</li>
+  </ul>
+</div>
+
+<div class="footer">
+  Matthew &mdash; Dollar Liquidity Watchman &middot; Cycle 21 &middot; Data as of 26 Aug 2026 &middot; Next cycle: ~4 Sep 2026
+</div>
+</body>
+</html>
