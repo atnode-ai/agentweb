@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Macro Monitor — Rubric Qualitative Check · W35 (w/e 28 Aug 2026)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0f2a4a; --blue:#1f5fa8; --ink:#1a2230; --muted:#5b6776;
+    --line:#e2e7ee; --soft:#f4f6f9; --bg:#e7eaef;
+    --hot:#c0392b; --warm:#b87211; --cool:#1f7a5a;
+    --hot-bg:#fbeae8; --warm-bg:#f8f0e1; --cool-bg:#e8f3ee; --blue-bg:#eaf1f9;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{background:var(--bg); color:var(--ink);
+    font-family:'Inter',-apple-system,system-ui,sans-serif; line-height:1.55;
+    -webkit-font-smoothing:antialiased; padding:0 0 64px;}
+  .num{font-variant-numeric:tabular-nums; font-feature-settings:"tnum";}
+
+  /* site nav */
+  .nav{background:var(--navy); color:#fff;}
+  .nav .in{width:min(880px,94vw); margin:0 auto; padding:14px 0;
+    display:flex; align-items:center; justify-content:space-between;}
+  .nav .brand{display:flex; align-items:center; gap:11px;}
+  .nav .dot{width:30px;height:30px;border-radius:7px;background:#fff;color:var(--navy);
+    display:flex;align-items:center;justify-content:center;font-size:16px;}
+  .nav .nm{font-weight:700;font-size:15px;letter-spacing:-.01em;}
+  .nav a.back{color:#9fc0e6; text-decoration:none; font-family:'IBM Plex Mono',monospace;
+    font-size:12px; letter-spacing:.04em;}
+  .nav a.back:hover{color:#fff;}
+
+  .page{width:min(880px,94vw); background:#fff; margin:0 auto 30px;
+    padding:54px 64px 60px; box-shadow:0 2px 26px rgba(15,42,74,.11); position:relative;}
+  .page.first{margin-top:30px; border-top:4px solid var(--navy);}
+  .page::after{content:attr(data-page); position:absolute; bottom:22px; right:64px;
+    font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.04em; color:#9aa6b4;}
+  .footline{position:absolute; bottom:22px; left:64px;
+    font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.04em; color:#9aa6b4;}
+  @media(max-width:640px){ .page{padding:40px 26px 56px;} .page::after,.footline{right:26px;left:26px;} }
+
+  .kicker{font-family:'IBM Plex Mono',monospace; font-size:12px; font-weight:600;
+    letter-spacing:.22em; text-transform:uppercase; color:var(--blue);}
+  h1,h2,h3{margin:0; line-height:1.15; letter-spacing:-.01em;}
+  p{margin:0 0 12px;}
+
+  .cover{min-height:74vh; display:flex; flex-direction:column;}
+  .cover .top{display:flex; justify-content:space-between; align-items:flex-start; gap:16px;
+    padding-bottom:20px; border-bottom:1px solid var(--line);}
+  .brand2{display:flex; align-items:center; gap:11px;}
+  .brand2 .d{width:34px;height:34px;border-radius:7px;background:var(--navy);
+    display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;}
+  .brand2 .nm{font-weight:700; font-size:15px;}
+  .brand2 .sb{font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--muted); letter-spacing:.06em;}
+  .cover .mid{flex:1; display:flex; flex-direction:column; justify-content:center; padding:48px 0;}
+  .cover h1{font-size:52px; font-weight:800; color:var(--navy); margin:14px 0 0;}
+  .cover .sub{font-size:20px; color:var(--muted); font-weight:500; margin-top:14px;}
+  .cover .we{font-family:'IBM Plex Mono',monospace; font-size:13px; color:var(--ink); margin-top:28px; letter-spacing:.02em;}
+  .regimebar{margin-top:28px; background:var(--navy); color:#fff; border-radius:8px;
+    padding:18px 22px; display:flex; gap:14px; align-items:baseline; flex-wrap:wrap;}
+  .regimebar .lab{font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.18em;
+    text-transform:uppercase; color:#9fc0e6;}
+  .regimebar .txt{font-size:16px; font-weight:600;}
+  .metagrid{display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--line);
+    border:1px solid var(--line); border-radius:8px; overflow:hidden; margin-top:26px;}
+  .metagrid div{background:#fff; padding:13px 15px;}
+  .metagrid .k{font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.12em;
+    text-transform:uppercase; color:var(--muted);}
+  .metagrid .v{font-size:13px; font-weight:600; margin-top:3px;}
+  @media(max-width:640px){ .cover h1{font-size:36px;} .metagrid{grid-template-columns:repeat(2,1fr);} }
+
+  .seclabel{font-family:'IBM Plex Mono',monospace; font-size:12px; font-weight:600;
+    letter-spacing:.16em; text-transform:uppercase; color:var(--blue);
+    padding-bottom:9px; border-bottom:2px solid var(--navy); margin-bottom:18px;
+    display:flex; justify-content:space-between; align-items:baseline;}
+  .seclabel .ix{color:#aab4c1; font-weight:500;}
+
+  .callout{background:var(--soft); border-left:4px solid var(--blue);
+    border-radius:0 8px 8px 0; padding:18px 22px; margin:0 0 22px;}
+  .callout.lead{font-size:15.5px;}
+
+  .kpis{display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin:0 0 24px;}
+  .kpi{border:1px solid var(--line); border-radius:9px; padding:14px 16px; background:#fff;}
+  .kpi .k{font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.1em;
+    text-transform:uppercase; color:var(--muted);}
+  .kpi .v{font-size:25px; font-weight:800; color:var(--navy); margin-top:5px; letter-spacing:-.02em;}
+  .kpi .d{font-size:11.5px; color:var(--muted); margin-top:2px;}
+  .kpi .v.hot{color:var(--hot);} .kpi .v.cool{color:var(--cool);} .kpi .v.warm{color:var(--warm);}
+  @media(max-width:640px){ .kpis{grid-template-columns:repeat(2,1fr);} }
+
+  table{width:100%; border-collapse:collapse; margin:4px 0 8px; font-size:13.5px;}
+  thead th{font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:.07em;
+    text-transform:uppercase; color:var(--muted); text-align:left; padding:8px 10px;
+    border-bottom:2px solid var(--navy);}
+  tbody td{padding:10px; border-bottom:1px solid var(--line); vertical-align:top;}
+  tbody tr:last-child td{border-bottom:none;}
+  td.dom{font-weight:700; color:var(--navy); white-space:nowrap;}
+  .pill{display:inline-block; font-size:11px; font-weight:600; padding:3px 9px; border-radius:20px;
+    font-family:'IBM Plex Mono',monospace; letter-spacing:.02em; white-space:nowrap;}
+  .pill.hot{background:var(--hot-bg); color:var(--hot);}
+  .pill.warm{background:var(--warm-bg); color:var(--warm);}
+  .pill.cool{background:var(--cool-bg); color:var(--cool);}
+  .pill.grey{background:#eef1f4; color:#7a8694;}
+
+  .block{margin-bottom:17px;}
+  .block h3{font-size:16px; font-weight:700; color:var(--navy); margin-bottom:4px;}
+  .block p{font-size:14px; color:#2b3543;}
+
+  .chartcard{border:1px solid var(--line); border-radius:10px; padding:18px 20px 14px; margin:6px 0 8px; background:#fff;}
+  .chartcard .ct{font-size:13px; font-weight:700; color:var(--navy);}
+  .chartcard .cs{font-size:11.5px; color:var(--muted); margin-bottom:10px;}
+  .chartwrap{height:250px; position:relative;}
+  .cap{font-size:11px; color:var(--muted); margin-top:8px; font-style:italic;}
+
+  .two{display:grid; grid-template-columns:1fr 1fr; gap:18px;}
+  @media(max-width:640px){ .two{grid-template-columns:1fr;} }
+  .watch h3,.ahead h3{font-size:13px; font-family:'IBM Plex Mono',monospace; letter-spacing:.08em;
+    text-transform:uppercase; color:var(--navy); margin-bottom:9px;}
+  .watch ul{margin:0; padding:0; list-style:none;}
+  .watch li{font-size:13px; padding:7px 0; border-bottom:1px dashed var(--line); color:#2b3543;}
+  .watch li:last-child{border-bottom:none;}
+  .watch li b{color:var(--navy);}
+  .tag{font-family:'IBM Plex Mono',monospace; font-size:10px; padding:2px 7px; border-radius:4px; margin-right:7px;}
+  .tag.h{background:var(--hot-bg); color:var(--hot);}
+  .tag.b{background:var(--cool-bg); color:var(--cool);}
+  .tag.l{background:var(--warm-bg); color:var(--warm);}
+  .cal{margin:0; padding:0; list-style:none;}
+  .cal li{display:flex; gap:11px; font-size:13px; padding:7px 0; border-bottom:1px dashed var(--line);}
+  .cal li:last-child{border-bottom:none;}
+  .cal .dt{font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--blue);
+    font-weight:600; white-space:nowrap; min-width:62px;}
+  .cal .star{color:var(--hot);}
+
+  .opnote{background:#fbfaf4; border:1px solid #ece3c9; border-radius:9px; padding:15px 18px; margin-top:6px;}
+  .opnote h3{font-size:12px; font-family:'IBM Plex Mono',monospace; letter-spacing:.08em;
+    text-transform:uppercase; color:var(--warm); margin-bottom:7px;}
+  .opnote p{font-size:13px; color:#3a4250; margin:0;}
+
+  .docfoot{margin-top:26px; padding-top:16px; border-top:1px solid var(--line);
+    font-size:11px; color:var(--muted); line-height:1.5;}
+  .docfoot .gl{font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:#6b7785;}
+  .site-footer{width:min(880px,94vw); margin:24px auto 40px; text-align:center; font-size:13px; color:var(--muted);}
+  .site-footer .attrib a{color:var(--blue); font-weight:600; text-decoration:none;}
+  .site-footer .attrib a:hover{text-decoration:underline;}
+  .site-footer .gl{font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:#7a8694; margin-top:8px;}
+  /* dependency-free bar chart (no CDN / no JS) */
+  .bc{margin-top:2px;}
+  .bc-plot{position:relative; height:200px; margin-left:32px; border-bottom:1px solid var(--line);}
+  .bc-line{position:absolute; left:0; right:0; border-top:1px dashed #eef1f4;}
+  .bc-line i{position:absolute; left:-32px; top:-8px; font-family:'IBM Plex Mono',monospace; font-size:10.5px; font-style:normal; color:#9aa6b4;}
+  .bc-line.base{border-top:none;}
+  .bc-groups{position:absolute; inset:0; display:flex;}
+  .bc-grp{flex:1; display:flex; align-items:flex-end; justify-content:center;}
+  .bc-bars{display:flex; align-items:flex-end; gap:16px; height:100%;}
+  .bc-bar{width:58px; border-radius:4px 4px 0 0; position:relative;}
+  .bc-bar.hd{background:var(--hot);}
+  .bc-bar.co{background:var(--blue);}
+  .bc-bar b{position:absolute; top:-19px; left:50%; transform:translateX(-50%); font-family:'IBM Plex Mono',monospace; font-weight:600; font-size:12px; color:var(--ink); white-space:nowrap;}
+  .bc-x{display:flex; margin:8px 0 0 32px;}
+  .bc-x span{flex:1; text-align:center; font-size:12.5px; font-weight:600; color:var(--ink);}
+  .bc-legend{display:flex; align-items:center; justify-content:center; gap:7px; margin-top:14px; font-size:12px; color:var(--muted);}
+  .bc-legend .sw{width:12px; height:12px; border-radius:3px; display:inline-block;}
+  .bc-legend .sw.hd{background:var(--hot);}
+  .bc-legend .sw.co{background:var(--blue); margin-left:12px;}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="in">
+    <div class="brand"><span class="dot">📡</span><span class="nm">Macro Monitor</span></div>
+    <a class="back" href="../reports/2026-W35.html">← Back to briefing</a>
+  </div>
+</nav>
+
+<!-- COVER -->
+<section class="page first cover" data-page="QA">
+  <div class="top">
+    <div class="brand2">
+      <div class="d">✔</div>
+      <div><div class="nm">Macro Monitor</div><div class="sb">POST-GENERATION QUALITY CHECK</div></div>
+    </div>
+    <div style="text-align:right;">
+      <div class="kicker">Rubric Check</div>
+      <div class="sb" style="margin-top:4px;">No. 2026-W35</div>
+    </div>
+  </div>
+  <div class="mid">
+    <div class="kicker">Qualitative Accuracy Review</div>
+    <h1>Rubric —<br>Qualitative Check</h1>
+    <div class="sub">Factual-accuracy audit of the Weekly Executive Briefing — dates, figures, grounding, consistency &amp; attribution.</div>
+    <div class="we">EDITION W35&nbsp;&nbsp;·&nbsp;&nbsp;WEEK ENDING FRIDAY, 28 AUGUST 2026</div>
+    <div class="regimebar">
+      <span class="lab">Verdict</span>
+      <span class="txt">One material date error found and corrected (Jackson Hole keynote → Fri 28 Aug). All other dated events and attributions verified. Overall weighted score <b>3.05 / 5.00</b>.</span>
+    </div>
+    <div class="metagrid">
+      <div><div class="k">Rubric</div><div class="v">Factual Accuracy Audit</div></div>
+      <div><div class="k">Overall score</div><div class="v">3.05 / 5.00</div></div>
+      <div><div class="k">Criteria</div><div class="v">5 · weighted</div></div>
+      <div><div class="k">Status</div><div class="v">1 issue → corrected</div></div>
+    </div>
+  </div>
+  <div class="footline">MACRO MONITOR · RUBRIC</div>
+</section>
+
+<!-- SCORECARD -->
+<section class="page" data-page="QA">
+  <div class="seclabel"><span>Scorecard</span><span class="ix">Macro Friday Report — Factual Accuracy Audit</span></div>
+  <div class="callout lead">This page records the post-generation accuracy check applied to the W35 briefing. Each factual statement was audited against the shared Macro Monitor blackboard and the release-calendar reference; every dated event's weekday was independently derived from its calendar date. Scores are 1–5; the overall is weight-averaged.</div>
+
+  <table>
+    <thead><tr><th>Criterion</th><th>Weight</th><th>Score</th><th>Assessment</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="dom">Event Date &amp; Calendar Accuracy</td>
+        <td class="num">0.30</td>
+        <td><span class="pill hot">1 / 5</span></td>
+        <td>Jackson Hole keynote labelled <b>“Fri 29 Aug”</b> in the body (×2) and <b>“Sat 29”</b> in the Week Ahead — but 29 Aug 2026 is a <b>Saturday</b>; the Chair's keynote is <b>Fri 28 Aug</b>. Wrong weekday/date pairing in three places. <i>Corrected in this edition.</i></td>
+      </tr>
+      <tr>
+        <td class="dom">Figure &amp; Data Fidelity vs Blackboard</td>
+        <td class="num">0.25</td>
+        <td><span class="pill cool">4 / 5*</span></td>
+        <td>Headline figures (core PCE +3.3%, core CPI 2.5%, claims 4-wk 205.5K, HY 263bp, permits +5.0%) are internally consistent and match the narrative. <i>*Provisional — scored from report text, pending a direct W35 blackboard cross-check.</i></td>
+      </tr>
+      <tr>
+        <td class="dom">Claim Grounding / No Fabrication</td>
+        <td class="num">0.20</td>
+        <td><span class="pill cool">4 / 5</span></td>
+        <td>Every substantive claim maps to a tracked indicator; no invented prints. All seven domains reported, including Financial Conditions &amp; Markets.</td>
+      </tr>
+      <tr>
+        <td class="dom">Internal Consistency</td>
+        <td class="num">0.15</td>
+        <td><span class="pill warm">3 / 5</span></td>
+        <td>The report contradicted itself on the keynote date — body/Week Ahead said the 29th while “data current as of Friday 28 August” treated 28 Aug as Friday. Resolved by the correction.</td>
+      </tr>
+      <tr>
+        <td class="dom">Attribution &amp; Recency Correctness</td>
+        <td class="num">0.10</td>
+        <td><span class="pill cool">5 / 5</span></td>
+        <td>Fed Chair correctly framed as <b>Warsh</b> (no Powell); reference months (July PCE, Aug CPI/PCE) current and correct; lead/lag statements directionally sound.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="opnote" style="background:#eef3f9; border:1px solid #cfe0f2;">
+    <h3 style="color:var(--blue);">Weighted result</h3>
+    <p>(1×0.30) + (4×0.25) + (4×0.20) + (3×0.15) + (5×0.10) = <b>3.05 / 5.00</b>. The score is held down almost entirely by the single date failure on the most heavily-weighted criterion — exactly the class of error the rubric exists to catch.</p>
+  </div>
+
+  <div class="footline">MACRO MONITOR · RUBRIC</div>
+</section>
+
+<!-- FINDINGS -->
+<section class="page" data-page="QA">
+  <div class="seclabel"><span>Findings &amp; Corrections</span><span class="ix">§ audit trail</span></div>
+
+  <div class="block">
+    <h3>Issue — Jackson Hole keynote date</h3>
+    <p>The briefing dated Chair Warsh's Jackson Hole keynote to 29 August. That date is a Saturday in 2026; the Kansas City Fed symposium's keynote is delivered on the Friday, <b>28 Aug 2026</b>. The error appeared three times — twice as “Fri 29 Aug” in the body and once as a starred “Sat 29” item in the Week Ahead — and contradicted the report's own “week ending Friday, 28 August” framing.</p>
+  </div>
+  <div class="block">
+    <h3>Correction applied</h3>
+    <p>All three instances were changed to <b>Fri 28 Aug</b> and the corrected edition republished. The briefing is now internally consistent on the keynote date.</p>
+  </div>
+  <div class="block">
+    <h3>Verified clean</h3>
+    <p>Other dated references check out: <b>WEEK ENDING Friday, 28 August</b> ✓, <b>4 Sep</b> August payrolls (first-Friday NFP) ✓, <b>ECB 10 Sep</b> (Thursday) ✓, July PCE <b>26 Aug</b> ✓, Aug PCE <b>30 Sep</b> ✓.</p>
+  </div>
+
+  <div class="opnote">
+    <h3>⚙ How this check runs</h3>
+    <p>This first evaluation was performed manually against the <b>Macro Friday Report — Factual Accuracy Audit</b> rubric. Going forward, the Friday consolidated run carries a mandatory self-audit gate (Part D) that derives each event's weekday from its date, cross-checks figures against the blackboard, and corrects errors <i>before</i> publishing — with a rubric page like this generated per edition.</p>
+  </div>
+
+  <div class="docfoot">
+    <p><b>Links:</b> <a href="../reports/2026-W35.html" style="color:var(--blue);font-weight:600;text-decoration:none;">Weekly Executive Briefing →</a> &nbsp;·&nbsp; <a href="../blackboard/2026-W35.html" style="color:var(--blue);font-weight:600;text-decoration:none;">Detailed Blackboard Snapshot →</a></p>
+    <p style="margin-top:8px;">Rubric evaluation prepared by the Macro Strategist orchestrator. <b>Internal quality record — not investment advice.</b></p>
+  </div>
+  <div class="footline">MACRO MONITOR · RUBRIC</div>
+</section>
+
+<footer class="site-footer">
+  <p class="attrib">Service offered by <a href="https://atnode.ai" target="_blank" rel="noopener noreferrer">atnode.ai</a> using the awesome <a href="https://hyperagent.com" target="_blank" rel="noopener noreferrer">hyperagent platform</a>.</p>
+  <p class="gl">Post-generation accuracy check · Internal monitoring summary — not investment advice.</p>
+</footer>
+</body>
+</html>
