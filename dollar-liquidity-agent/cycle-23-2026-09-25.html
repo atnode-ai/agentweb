@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cycle 23 — Dollar Liquidity Monitor — 25 Sep 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0e17;
+  --surface: #111827;
+  --surface-2: #1a2332;
+  --border: #1e2d3d;
+  --text: #e2e8f0;
+  --text-dim: #8899aa;
+  --green: #22c55e;
+  --green-dim: rgba(34,197,94,0.12);
+  --amber: #f59e0b;
+  --amber-dim: rgba(245,158,11,0.12);
+  --red: #ef4444;
+  --blue: #3b82f6;
+  --blue-dim: rgba(59,130,246,0.12);
+  --purple: #a78bfa;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'IBM Plex Sans',system-ui,sans-serif; background:var(--bg); color:var(--text); padding:2rem; max-width:1200px; margin:0 auto; }
+.mono { font-family:'IBM Plex Mono',monospace; }
+.header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:2rem; padding-bottom:1.5rem; border-bottom:1px solid var(--border); }
+.header h1 { font-size:1.5rem; font-weight:700; letter-spacing:-0.02em; }
+.header .cycle { color:var(--text-dim); font-size:0.875rem; margin-top:0.25rem; }
+.status-badge { display:inline-flex; align-items:center; gap:0.5rem; padding:0.5rem 1rem; border-radius:6px; font-weight:600; font-size:0.9rem; }
+.status-green { background:var(--green-dim); color:var(--green); border:1px solid rgba(34,197,94,0.25); }
+.status-amber { background:var(--amber-dim); color:var(--amber); border:1px solid rgba(245,158,11,0.25); }
+.status-red { background:rgba(239,68,68,0.12); color:var(--red); border:1px solid rgba(239,68,68,0.25); }
+.grid { display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; margin-bottom:2rem; }
+.card { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:1.25rem; }
+.card-label { font-size:0.75rem; color:var(--text-dim); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:0.5rem; }
+.card-value { font-family:'IBM Plex Mono',monospace; font-size:1.5rem; font-weight:600; }
+.card-delta { font-size:0.8rem; margin-top:0.25rem; }
+.positive { color:var(--green); }
+.negative { color:var(--red); }
+.neutral { color:var(--text-dim); }
+.section { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:1.5rem; margin-bottom:1.5rem; }
+.section h2 { font-size:1rem; font-weight:600; margin-bottom:1rem; display:flex; align-items:center; gap:0.5rem; }
+table { width:100%; border-collapse:collapse; font-size:0.85rem; }
+th { text-align:left; padding:0.5rem 0.75rem; border-bottom:1px solid var(--border); color:var(--text-dim); font-weight:500; font-size:0.75rem; text-transform:uppercase; letter-spacing:0.04em; }
+td { padding:0.5rem 0.75rem; border-bottom:1px solid rgba(30,45,61,0.5); }
+tr:last-child td { border-bottom:none; }
+.trend { display:flex; align-items:flex-end; gap:3px; height:40px; margin-top:0.5rem; }
+.trend-bar { background:var(--blue); border-radius:2px 2px 0 0; min-width:8px; flex:1; transition:height 0.3s; }
+.news-item { padding:0.75rem 0; border-bottom:1px solid rgba(30,45,61,0.5); }
+.news-item:last-child { border-bottom:none; }
+.news-tier { font-size:0.7rem; padding:0.15rem 0.4rem; border-radius:3px; font-weight:600; margin-right:0.5rem; }
+.tier-a { background:rgba(34,197,94,0.15); color:var(--green); }
+.tier-b { background:rgba(59,130,246,0.15); color:var(--blue); }
+.tier-c { background:rgba(167,139,250,0.15); color:var(--purple); }
+.news-date { color:var(--text-dim); font-size:0.75rem; }
+.news-text { font-size:0.85rem; margin-top:0.25rem; line-height:1.5; }
+.alert-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:0.75rem; }
+.alert-item { background:var(--surface-2); border-radius:6px; padding:0.75rem; font-size:0.8rem; }
+.alert-status { display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:0.4rem; }
+.alert-status.green { background:var(--green); }
+.alert-status.amber { background:var(--amber); }
+.alert-status.red { background:var(--red); }
+.alert-name { font-weight:500; font-size:0.8rem; }
+.alert-val { color:var(--text-dim); font-size:0.75rem; margin-top:0.25rem; }
+.footer { text-align:center; color:var(--text-dim); font-size:0.75rem; margin-top:2rem; padding-top:1rem; border-top:1px solid var(--border); }
+@media(max-width:768px) { .grid { grid-template-columns:repeat(2,1fr); } .alert-grid { grid-template-columns:1fr 1fr; } body { padding:1rem; } }
+@media(max-width:480px) { .grid { grid-template-columns:1fr; } .alert-grid { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<div class="header">
+  <div>
+    <h1>Dollar Liquidity Monitor</h1>
+    <div class="cycle">Cycle 23 &mdash; 25 September 2026 &middot; H.4.1 data: 23 Sep</div>
+  </div>
+  <div class="status-badge status-green">&#x25CF; GREEN</div>
+</div>
+
+<div class="grid">
+  <div class="card">
+    <div class="card-label">Swap Lines (SWPT)</div>
+    <div class="card-value">$72M</div>
+    <div class="card-delta neutral">WoW &minus;$22M &middot; vs base &minus;$134M</div>
+    <div class="trend">
+      <div class="trend-bar" style="height:93%;" title="$123 — Aug 19"></div>
+      <div class="trend-bar" style="height:92%;" title="$121 — Aug 26"></div>
+      <div class="trend-bar" style="height:100%;" title="$132 — Sep 2"></div>
+      <div class="trend-bar" style="height:77%;" title="$101 — Sep 9"></div>
+      <div class="trend-bar" style="height:71%;" title="$94 — Sep 16"></div>
+      <div class="trend-bar" style="height:55%;" title="$72 — Sep 23 (latest)"></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-label">Foreign Custody (WMTSEC1)</div>
+    <div class="card-value">$2.610T</div>
+    <div class="card-delta positive">WoW +$12.4B &middot; vs base &minus;$127.6B</div>
+    <div class="trend">
+      <div class="trend-bar" style="height:1%;" title="$2.592T — Aug 19"></div>
+      <div class="trend-bar" style="height:54%;" title="$2.602T — Aug 26"></div>
+      <div class="trend-bar" style="height:94%;" title="$2.609T — Sep 2"></div>
+      <div class="trend-bar" style="height:35%;" title="$2.598T — Sep 9"></div>
+      <div class="trend-bar" style="height:32%;" title="$2.598T — Sep 16"></div>
+      <div class="trend-bar" style="height:100%;" title="$2.610T — Sep 23 (latest)"></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-label">All Custody (WSEFINT1)</div>
+    <div class="card-value">$2.885T</div>
+    <div class="card-delta positive">WoW +$11.8B &middot; vs base &minus;$143.6B</div>
+    <div class="trend">
+      <div class="trend-bar" style="height:1%;" title="$2.871T — Aug 19"></div>
+      <div class="trend-bar" style="height:50%;" title="$2.878T — Aug 26"></div>
+      <div class="trend-bar" style="height:97%;" title="$2.885T — Sep 2"></div>
+      <div class="trend-bar" style="height:21%;" title="$2.874T — Sep 9"></div>
+      <div class="trend-bar" style="height:18%;" title="$2.874T — Sep 16"></div>
+      <div class="trend-bar" style="height:100%;" title="$2.885T — Sep 23 (latest)"></div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-label">FIMA Repo</div>
+    <div class="card-value">$0</div>
+    <div class="card-delta neutral">No usage detected</div>
+    <div style="margin-top:0.75rem; font-size:0.75rem; color:var(--text-dim);">Reverted to $0 this week (consecutive_zero: 1), after sitting flat at $1M for two weeks (9 & 16 Sep). This confirms last cycle's read that the $1M plateau was an operational/connectivity test rather than a genuine draw.</div>
+  </div>
+</div>
+
+<!-- Japan Side -->
+<div class="section">
+  <h2>&#x1F1EF;&#x1F1F5; Japan Side</h2>
+  <div class="grid" style="margin-bottom:0;">
+    <div style="background:var(--surface-2); border-radius:6px; padding:1rem;">
+      <div class="card-label">MoF Total Reserves</div>
+      <div class="card-value" style="font-size:1.25rem;">$1.208T</div>
+      <div class="card-delta negative">MoM &minus;$79.6B &middot; vs base &minus;$175.5B</div>
+    </div>
+    <div style="background:var(--surface-2); border-radius:6px; padding:1rem;">
+      <div class="card-label">FX Reserves</div>
+      <div class="card-value" style="font-size:1.25rem;">$995.0B</div>
+      <div class="card-delta negative">MoM &minus;$94.6B &middot; vs base &minus;$174.4B</div>
+    </div>
+    <div style="background:var(--surface-2); border-radius:6px; padding:1rem;">
+      <div class="card-label">JPY/USD</div>
+      <div class="card-value" style="font-size:1.25rem;">&yen;156.16</div>
+      <div class="card-delta neutral">Sep 18</div>
+    </div>
+    <div style="background:var(--surface-2); border-radius:6px; padding:1rem;">
+      <div class="card-label">BoJ FX Assets</div>
+      <div class="card-value" style="font-size:1.25rem;">&yen;11.97T</div>
+      <div class="card-delta neutral">MoM -0.6%</div>
+    </div>
+  </div>
+  <div style="margin-top:0.75rem; font-size:0.8rem; color:var(--text-dim);">TOTAL_RESERVES is still the August 2026 MoF print (-$79.6B MoM, -$175.5B vs baseline) -- byte-for-byte the same figure already reported and explained in Cycle 22. No new MoF release has landed since; the script recomputes J1 off the same 'latest' data point each week until the end-September release lands, so this is not a new escalation. MoF validation: identity check OK (gap $0), baseline diff $13M (negligible).</div>
+</div>
+
+<!-- TIC -->
+<div class="section">
+  <h2>&#x1F4CA; TIC July 2026 &mdash; Foreign Holdings</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Country</th>
+        <th>Holdings ($B)</th>
+        <th>Change ($B)</th>
+        <th>Direction</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Grand Total</td>
+        <td class="mono">$9,248.1B</td>
+        <td class="mono negative">&minus;$50.4B</td>
+        <td class="negative">&#x25BC; Negative</td>
+      </tr>
+      <tr>
+        <td>Foreign Official</td>
+        <td class="mono">$3,773.1B</td>
+        <td class="mono negative">&minus;$5.0B</td>
+        <td class="negative">&#x25BC; Negative</td>
+      </tr>
+      <tr>
+        <td>All Other</td>
+        <td class="mono">$1,842.4B</td>
+        <td class="mono negative">&minus;$7.9B</td>
+        <td class="negative">&#x25BC; Negative</td>
+      </tr>
+      <tr>
+        <td>Japan</td>
+        <td class="mono">$1,103.9B</td>
+        <td class="mono negative">&minus;$12.8B</td>
+        <td class="negative">&#x25BC; -$12.8B -- same July 2026 release already reported in Cycle 22, no new data</td>
+      </tr>
+      <tr>
+        <td>UK</td>
+        <td class="mono">$998.3B</td>
+        <td class="mono positive">+$58.4B</td>
+        <td class="positive">&#x25B2; Positive</td>
+      </tr>
+      <tr>
+        <td>China</td>
+        <td class="mono">$618.0B</td>
+        <td class="mono negative">&minus;$15.4B</td>
+        <td class="negative">&#x25BC; -$15.4B -- same July 2026 release</td>
+      </tr>
+      <tr>
+        <td>Belgium</td>
+        <td class="mono">$470.7B</td>
+        <td class="mono negative">&minus;$11.8B</td>
+        <td class="negative">&#x25BC; Negative</td>
+      </tr>
+      <tr>
+        <td>Cayman Islands</td>
+        <td class="mono">$460.1B</td>
+        <td class="mono positive">+$7.0B</td>
+        <td class="positive">&#x25B2; Positive</td>
+      </tr>
+    </tbody>
+  </table>
+  <div style="margin-top:0.75rem; font-size:0.8rem; color:var(--text-dim);">No new TIC release since Cycle 22 -- still July 2026 data (one-month lag). Next release (August data) expected mid-October. Saudi Arabia and UAE moves remain both under their $5B flags.</div>
+</div>
+
+<!-- News -->
+<div class="section">
+  <h2>&#x1F4F0; Tier A/B News &mdash; 23&ndash;25 Sep 2026</h2>
+
+  <div class="news-item">
+    <div class="news-text">No material Tier A/B developments this window.</div>
+  </div>
+</div>
+
+<!-- Alerts -->
+<div class="section">
+  <h2>&#x1F6E1;&#xFE0F; Alert Thresholds</h2>
+  <div class="alert-grid">
+    <div class="alert-item"><span class="alert-status green"></span><span class="alert-name">SWPT > $1B</span><div class="alert-val">$72M &mdash; clear</div></div>
+    <div class="alert-item"><span class="alert-status green"></span><span class="alert-name">FIMA > $0 (2 wks)</span><div class="alert-val">$0 &mdash; 1 straight weeks</div></div>
+    <div class="alert-item"><span class="alert-status green"></span><span class="alert-name">4-wk custody > $50B</span><div class="alert-val">+$8.3B &mdash; reversed</div></div>
+    <div class="alert-item"><span class="alert-status green"></span><span class="alert-name">New counterparty</span><div class="alert-val">None -- no new counterparty named or approved this window</div></div>
+    <div class="alert-item"><span class="alert-status green"></span><span class="alert-name">Cluster (2+ / 30d)</span><div class="alert-val">None -- no new non-baseline swap-line request or approval found in a Tier A/B scan of this window</div></div>
+    <div class="alert-item"><span class="alert-status green"></span><span class="alert-name">Temp &rarr; permanent</span><div class="alert-val">None -- no temporary-to-permanent conversion</div></div>
+    <div class="alert-item"><span class="alert-status red"></span><span class="alert-name">J1: Reserves −$25B MoM</span><div class="alert-val">&minus;$79.6B MoM &mdash; CROSSED</div></div>
+    <div class="alert-item"><span class="alert-status green"></span><span class="alert-name">J2: MABJMA12 > 10%</span><div class="alert-val">&minus;0.6% &mdash; clear</div></div>
+    <div class="alert-item"><span class="alert-status green"></span><span class="alert-name">J3: Intervention</span><div class="alert-val">No new &mdash; last ¥15.40T to 2026-07-30</div></div>
+  </div>
+</div>
+
+<!-- Watch Items -->
+<div class="section">
+  <h2>&#x1F441;&#xFE0F; Watch Items</h2>
+  <ul style="font-size:0.85rem; line-height:1.7; padding-left:1.25rem; color:var(--text-dim);">
+    <li><strong style="color:var(--text);">Japan reserves -- awaiting the first genuinely new MoF print:</strong> J1 is still firing on the same August MoF data (-$79.6B MoM) reported last cycle. The end-September MoF release is the next point that could show either a continuation or an easing of the drawdown -- that will be the first fresh signal, not this week&#x27;s repeat.</li>
+    <li><strong style="color:var(--text);">FIMA Repo -- back to $0:</strong> Reverted to zero after two flat weeks at $1M, consistent with the operational-test read. Watch for any reappearance, which would start a fresh count.</li>
+    <li><strong style="color:var(--text);">Hormuz -- still unsigned:</strong> No signing confirmed since Iran and Oman agreed a temporary routing arrangement in late August; the underlying framework remains provisional pending US commitments under the lapsed interim deal. Continued non-resolution keeps the Gulf-side liquidity driver live.</li>
+    <li><strong style="color:var(--text);">Pakistan ESF -- still pending:</strong> US Treasury decision on the $10B request still expected within Islamabad&#x27;s ~2-month window (per 17 Sep Reuters interview); no announcement this week.</li>
+  </ul>
+</div>
+
+<div class="footer">
+  Matthew &mdash; Dollar Liquidity Watchman &middot; Cycle 23 &middot; Data as of 23 Sep 2026 &middot; Next cycle: ~2 Oct 2026
+</div>
+</body>
+</html>
