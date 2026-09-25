@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Macro Monitor — Weekly Executive Briefing · W39 (w/e 25 Sep 2026)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0f2a4a; --blue:#1f5fa8; --ink:#1a2230; --muted:#5b6776;
+    --line:#e2e7ee; --soft:#f4f6f9; --bg:#e7eaef;
+    --hot:#c0392b; --warm:#b87211; --cool:#1f7a5a;
+    --hot-bg:#fbeae8; --warm-bg:#f8f0e1; --cool-bg:#e8f3ee; --blue-bg:#eaf1f9;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{background:var(--bg); color:var(--ink);
+    font-family:'Inter',-apple-system,system-ui,sans-serif; line-height:1.55;
+    -webkit-font-smoothing:antialiased; padding:0 0 64px;}
+  .num{font-variant-numeric:tabular-nums; font-feature-settings:"tnum";}
+
+  /* site nav */
+  .nav{background:var(--navy); color:#fff;}
+  .nav .in{width:min(880px,94vw); margin:0 auto; padding:14px 0;
+    display:flex; align-items:center; justify-content:space-between;}
+  .nav .brand{display:flex; align-items:center; gap:11px;}
+  .nav .dot{width:30px;height:30px;border-radius:7px;background:#fff;color:var(--navy);
+    display:flex;align-items:center;justify-content:center;font-size:16px;}
+  .nav .nm{font-weight:700;font-size:15px;letter-spacing:-.01em;}
+  .nav a.back{color:#9fc0e6; text-decoration:none; font-family:'IBM Plex Mono',monospace;
+    font-size:12px; letter-spacing:.04em;}
+  .nav a.back:hover{color:#fff;}
+
+  .page{width:min(880px,94vw); background:#fff; margin:0 auto 30px;
+    padding:54px 64px 60px; box-shadow:0 2px 26px rgba(15,42,74,.11); position:relative;}
+  .page.first{margin-top:30px; border-top:4px solid var(--navy);}
+  .page::after{content:attr(data-page); position:absolute; bottom:22px; right:64px;
+    font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.04em; color:#9aa6b4;}
+  .footline{position:absolute; bottom:22px; left:64px;
+    font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.04em; color:#9aa6b4;}
+  @media(max-width:640px){ .page{padding:40px 26px 56px;} .page::after,.footline{right:26px;left:26px;} }
+
+  .kicker{font-family:'IBM Plex Mono',monospace; font-size:12px; font-weight:600;
+    letter-spacing:.22em; text-transform:uppercase; color:var(--blue);}
+  h1,h2,h3{margin:0; line-height:1.15; letter-spacing:-.01em;}
+  p{margin:0 0 12px;}
+
+  .cover{min-height:74vh; display:flex; flex-direction:column;}
+  .cover .top{display:flex; justify-content:space-between; align-items:flex-start; gap:16px;
+    padding-bottom:20px; border-bottom:1px solid var(--line);}
+  .brand2{display:flex; align-items:center; gap:11px;}
+  .brand2 .d{width:34px;height:34px;border-radius:7px;background:var(--navy);
+    display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;}
+  .brand2 .nm{font-weight:700; font-size:15px;}
+  .brand2 .sb{font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--muted); letter-spacing:.06em;}
+  .cover .mid{flex:1; display:flex; flex-direction:column; justify-content:center; padding:48px 0;}
+  .cover h1{font-size:52px; font-weight:800; color:var(--navy); margin:14px 0 0;}
+  .cover .sub{font-size:20px; color:var(--muted); font-weight:500; margin-top:14px;}
+  .cover .we{font-family:'IBM Plex Mono',monospace; font-size:13px; color:var(--ink); margin-top:28px; letter-spacing:.02em;}
+  .regimebar{margin-top:28px; background:var(--navy); color:#fff; border-radius:8px;
+    padding:18px 22px; display:flex; gap:14px; align-items:baseline; flex-wrap:wrap;}
+  .regimebar .lab{font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.18em;
+    text-transform:uppercase; color:#9fc0e6;}
+  .regimebar .txt{font-size:16px; font-weight:600;}
+  .metagrid{display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--line);
+    border:1px solid var(--line); border-radius:8px; overflow:hidden; margin-top:26px;}
+  .metagrid div{background:#fff; padding:13px 15px;}
+  .metagrid .k{font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.12em;
+    text-transform:uppercase; color:var(--muted);}
+  .metagrid .v{font-size:13px; font-weight:600; margin-top:3px;}
+  @media(max-width:640px){ .cover h1{font-size:36px;} .metagrid{grid-template-columns:repeat(2,1fr);} }
+
+  .seclabel{font-family:'IBM Plex Mono',monospace; font-size:12px; font-weight:600;
+    letter-spacing:.16em; text-transform:uppercase; color:var(--blue);
+    padding-bottom:9px; border-bottom:2px solid var(--navy); margin-bottom:18px;
+    display:flex; justify-content:space-between; align-items:baseline;}
+  .seclabel .ix{color:#aab4c1; font-weight:500;}
+
+  .callout{background:var(--soft); border-left:4px solid var(--blue);
+    border-radius:0 8px 8px 0; padding:18px 22px; margin:0 0 22px;}
+  .callout.lead{font-size:15.5px;}
+
+  .kpis{display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin:0 0 24px;}
+  .kpi{border:1px solid var(--line); border-radius:9px; padding:14px 16px; background:#fff;}
+  .kpi .k{font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.1em;
+    text-transform:uppercase; color:var(--muted);}
+  .kpi .v{font-size:25px; font-weight:800; color:var(--navy); margin-top:5px; letter-spacing:-.02em;}
+  .kpi .d{font-size:11.5px; color:var(--muted); margin-top:2px;}
+  .kpi .v.hot{color:var(--hot);} .kpi .v.cool{color:var(--cool);} .kpi .v.warm{color:var(--warm);}
+  @media(max-width:640px){ .kpis{grid-template-columns:repeat(2,1fr);} }
+
+  table{width:100%; border-collapse:collapse; margin:4px 0 8px; font-size:13.5px;}
+  thead th{font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:.07em;
+    text-transform:uppercase; color:var(--muted); text-align:left; padding:8px 10px;
+    border-bottom:2px solid var(--navy);}
+  tbody td{padding:10px; border-bottom:1px solid var(--line); vertical-align:top;}
+  tbody tr:last-child td{border-bottom:none;}
+  td.dom{font-weight:700; color:var(--navy); white-space:nowrap;}
+  .pill{display:inline-block; font-size:11px; font-weight:600; padding:3px 9px; border-radius:20px;
+    font-family:'IBM Plex Mono',monospace; letter-spacing:.02em; white-space:nowrap;}
+  .pill.hot{background:var(--hot-bg); color:var(--hot);}
+  .pill.warm{background:var(--warm-bg); color:var(--warm);}
+  .pill.cool{background:var(--cool-bg); color:var(--cool);}
+  .pill.grey{background:#eef1f4; color:#7a8694;}
+
+  .block{margin-bottom:17px;}
+  .block h3{font-size:16px; font-weight:700; color:var(--navy); margin-bottom:4px;}
+  .block p{font-size:14px; color:#2b3543;}
+
+  .chartcard{border:1px solid var(--line); border-radius:10px; padding:18px 20px 14px; margin:6px 0 8px; background:#fff;}
+  .chartcard .ct{font-size:13px; font-weight:700; color:var(--navy);}
+  .chartcard .cs{font-size:11.5px; color:var(--muted); margin-bottom:10px;}
+  .chartwrap{height:250px; position:relative;}
+  .cap{font-size:11px; color:var(--muted); margin-top:8px; font-style:italic;}
+
+  .two{display:grid; grid-template-columns:1fr 1fr; gap:18px;}
+  @media(max-width:640px){ .two{grid-template-columns:1fr;} }
+  .watch h3,.ahead h3{font-size:13px; font-family:'IBM Plex Mono',monospace; letter-spacing:.08em;
+    text-transform:uppercase; color:var(--navy); margin-bottom:9px;}
+  .watch ul{margin:0; padding:0; list-style:none;}
+  .watch li{font-size:13px; padding:7px 0; border-bottom:1px dashed var(--line); color:#2b3543;}
+  .watch li:last-child{border-bottom:none;}
+  .watch li b{color:var(--navy);}
+  .tag{font-family:'IBM Plex Mono',monospace; font-size:10px; padding:2px 7px; border-radius:4px; margin-right:7px;}
+  .tag.h{background:var(--hot-bg); color:var(--hot);}
+  .tag.b{background:var(--cool-bg); color:var(--cool);}
+  .tag.l{background:var(--warm-bg); color:var(--warm);}
+  .cal{margin:0; padding:0; list-style:none;}
+  .cal li{display:flex; gap:11px; font-size:13px; padding:7px 0; border-bottom:1px dashed var(--line);}
+  .cal li:last-child{border-bottom:none;}
+  .cal .dt{font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--blue);
+    font-weight:600; white-space:nowrap; min-width:62px;}
+  .cal .star{color:var(--hot);}
+
+  .opnote{background:#fbfaf4; border:1px solid #ece3c9; border-radius:9px; padding:15px 18px; margin-top:6px;}
+  .opnote h3{font-size:12px; font-family:'IBM Plex Mono',monospace; letter-spacing:.08em;
+    text-transform:uppercase; color:var(--warm); margin-bottom:7px;}
+  .opnote p{font-size:13px; color:#3a4250; margin:0;}
+
+  .docfoot{margin-top:26px; padding-top:16px; border-top:1px solid var(--line);
+    font-size:11px; color:var(--muted); line-height:1.5;}
+  .docfoot .gl{font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:#6b7785;}
+  .site-footer{width:min(880px,94vw); margin:24px auto 40px; text-align:center; font-size:13px; color:var(--muted);}
+  .site-footer .attrib a{color:var(--blue); font-weight:600; text-decoration:none;}
+  .site-footer .attrib a:hover{text-decoration:underline;}
+  .site-footer .gl{font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:#7a8694; margin-top:8px;}
+  /* dependency-free bar chart (no CDN / no JS) */
+  .bc{margin-top:2px;}
+  .bc-plot{position:relative; height:200px; margin-left:32px; border-bottom:1px solid var(--line);}
+  .bc-line{position:absolute; left:0; right:0; border-top:1px dashed #eef1f4;}
+  .bc-line i{position:absolute; left:-32px; top:-8px; font-family:'IBM Plex Mono',monospace; font-size:10.5px; font-style:normal; color:#9aa6b4;}
+  .bc-line.base{border-top:none;}
+  .bc-groups{position:absolute; inset:0; display:flex;}
+  .bc-grp{flex:1; display:flex; align-items:flex-end; justify-content:center;}
+  .bc-bars{display:flex; align-items:flex-end; gap:16px; height:100%;}
+  .bc-bar{width:58px; border-radius:4px 4px 0 0; position:relative;}
+  .bc-bar.hd{background:var(--hot);}
+  .bc-bar.co{background:var(--blue);}
+  .bc-bar b{position:absolute; top:-19px; left:50%; transform:translateX(-50%); font-family:'IBM Plex Mono',monospace; font-weight:600; font-size:12px; color:var(--ink); white-space:nowrap;}
+  .bc-x{display:flex; margin:8px 0 0 32px;}
+  .bc-x span{flex:1; text-align:center; font-size:12.5px; font-weight:600; color:var(--ink);}
+  .bc-legend{display:flex; align-items:center; justify-content:center; gap:7px; margin-top:14px; font-size:12px; color:var(--muted);}
+  .bc-legend .sw{width:12px; height:12px; border-radius:3px; display:inline-block;}
+  .bc-legend .sw.hd{background:var(--hot);}
+  .bc-legend .sw.co{background:var(--blue); margin-left:12px;}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="in">
+    <div class="brand"><span class="dot">📡</span><span class="nm">Macro Monitor</span></div>
+    <a class="back" href="../index.html">← All reports</a>
+  </div>
+</nav>
+
+<!-- COVER -->
+<section class="page first cover" data-page="01">
+  <div class="top">
+    <div class="brand2">
+      <div class="d">📡</div>
+      <div><div class="nm">Macro Monitor</div><div class="sb">CROSS-ASSET SURVEILLANCE</div></div>
+    </div>
+    <div style="text-align:right;">
+      <div class="kicker">Internal Briefing</div>
+      <div class="sb" style="margin-top:4px;">No. 2026-W39</div>
+    </div>
+  </div>
+  <div class="mid">
+    <div class="kicker">Weekly Executive Briefing</div>
+    <h1>State of the<br>Macro Backdrop</h1>
+    <div class="sub">Inflation, labour, growth &amp; the policy outlook — at a glance for decision-makers.</div>
+    <div class="we">WEEK ENDING&nbsp;&nbsp;·&nbsp;&nbsp;FRIDAY, 25 SEPTEMBER 2026</div>
+    <div class="regimebar">
+      <span class="lab">Regime</span>
+      <span class="txt">Hawkish repricing, round two — the market has moved beyond the Fed. A week after the +25bp hike to 3.75–4.00%, the 10-year cleared 5% for the first time this cycle (a real-yield, credibility move) and CME now prices a 28 Oct hike near 70%. The data keeps validating it: services PMI at multi-year highs with input costs at four-year highs, jobless claims still deepening, and the UMich long-run inflation anchor holding at 3.4% in the September final. The counter-current — housing at cycle lows, soft manufacturing output, collapsing sentiment — persists but is being overridden. Month-end arbiters: core PCE (30 Sep) and September payrolls (2 Oct).</span>
+    </div>
+    <div class="metagrid">
+      <div><div class="k">Prepared by</div><div class="v">Macro Strategist</div></div>
+      <div><div class="k">Data as of</div><div class="v">25 Sep 2026</div></div>
+      <div><div class="k">Classification</div><div class="v">Internal</div></div>
+      <div><div class="k">Distribution</div><div class="v">Public web</div></div>
+    </div>
+  </div>
+  <div class="footline">MACRO MONITOR · WEEKLY</div>
+</section>
+
+<!-- SUMMARY + KPIs + TABLE -->
+<section class="page" data-page="02">
+  <div class="seclabel"><span>Executive Summary</span><span class="ix">§ 1</span></div>
+  <div class="callout lead">
+    A week after the hike, the market has moved decisively beyond the Fed — this is hawkish repricing, round two. The one-more-hike dot-plot has become the floor, not the ceiling: <b>the 10-year yield jumped +24bp on the week to 5.18%, clearing 5% for the first time this cycle</b>, driven almost entirely by <b>real yields (+24bp to 2.85%) with breakevens flat (10y 2.33%)</b> — a Fed-credibility tightening, not an inflation-comp scare. The front end firmed again (2y +20bp to 4.87%), the curve bear-steepened (still dis-inverted, no regime change), and <b>CME FedWatch now prices the 28 Oct meeting at ~70% for another hike</b> (up from ~40% immediately post-FOMC), with year-end ~93% for at least one more. Fed speakers reinforced it — Barr said "further policy adjustments are likely to be needed," echoed by Musalem and Collins — and <b>S&amp;P Global flash PMIs came in hot (services 58.7, manufacturing 56.7, multi-year highs) with input costs at four-year highs</b> on fuel and wages. The data this week kept validating the hawkish path: <b>August durable-goods core capex +1.6%</b> (a large beat, AI-capex boom intact) confirmed resilient business investment, and <b>jobless claims deepened again</b> on a clean non-holiday week (4-week average 202.25K, a third straight decline). The genuine counter-current is sentiment: the <b>UMich September final printed 48.1</b> — a small beat but a third straight monthly decline to a four-month low — and, critically, <b>both inflation anchors held elevated (1-yr 4.6%, 5–10yr 3.4%)</b>, confirming rather than softening the preliminary's hawkish signal. Stress channels still are <i>not</i> confirming (HY 280bp, VIX 14.21, NFCI −0.555 still loose), so the delivered hike is not yet visible in weekly financial conditions. Net — a credible-hawk Fed being <i>front-run</i> by a market pricing a second hike, into a two-track economy whose soft pocket (housing at cycle lows, flat factory output, collapsing sentiment) is being overridden. The arbiters land at month-end: <b>core PCE (30 Sep) and September payrolls (2 Oct)</b>.
+  </div>
+
+  <div class="seclabel" style="margin-top:30px;"><span>At a Glance</span><span class="ix">key indicators</span></div>
+  <div class="kpis">
+    <div class="kpi"><div class="k">10Y Treasury</div><div class="v hot num">5.18%</div><div class="d">+24bp/wk · through 5% first time this cycle</div></div>
+    <div class="kpi"><div class="k">Oct 28 hike odds · CME</div><div class="v hot num">~70%</div><div class="d">Up from ~40% post-FOMC · dots: one more '26</div></div>
+    <div class="kpi"><div class="k">Fed Funds target</div><div class="v hot num">3.75–4.00%</div><div class="d">+25bp 16 Sep · next FOMC 28 Oct</div></div>
+    <div class="kpi"><div class="k">UMich sentiment · Sept</div><div class="v hot num">48.1</div><div class="d">4-mo low; 5–10yr anchor 3.4% held</div></div>
+    <div class="kpi"><div class="k">Core capex · Aug (m/m)</div><div class="v cool num">+1.6%</div><div class="d">Large beat vs +0.5% · AI capex intact</div></div>
+    <div class="kpi"><div class="k">Core PCE · y/y</div><div class="v warm num">+3.3%</div><div class="d">Fed's gauge — Aug print 30 Sep</div></div>
+  </div>
+
+  <div class="seclabel" style="margin-top:26px;"><span>Domain Scorecard</span><span class="ix">§ 2</span></div>
+  <table>
+    <thead><tr><th>Domain</th><th>Headline signal</th><th style="text-align:right;">Read</th></tr></thead>
+    <tbody>
+      <tr><td class="dom">Inflation</td><td>Aug core CPI +0.3% m/m (hot) · +2.4% y/y (new low) · core PCE +3.3% (Aug print 30 Sep)</td><td style="text-align:right;"><span class="pill warm">YoY LOW, MONTHLY RE-ACCEL</span></td></tr>
+      <tr><td class="dom">Labour</td><td>Claims 197K · 4-wk avg 202.25K (3rd ↓, 6-wk low) · continuing 1.719M · NFP Aug +162K</td><td style="text-align:right;"><span class="pill cool">TURN DEAD · CLAIMS DEEPENING</span></td></tr>
+      <tr><td class="dom">Growth &amp; Activity</td><td>Aug durable core capex +1.6% (beat) · retail ctrl +1.4% · ISM Svcs 55.4 (Prices 72.6) · IP flat</td><td style="text-align:right;"><span class="pill warm">TWO-TRACK · CAPEX STRONG</span></td></tr>
+      <tr><td class="dom">Housing</td><td>Aug existing −2.0% (3.98M, 3rd drop) · new-home +6.4% (8-mo high) · permits −2.7% · 30y ~7.03%</td><td style="text-align:right;"><span class="pill grey">CYCLE LOWS · NEW-SALES BOUNCE</span></td></tr>
+      <tr><td class="dom">Sentiment</td><td>UMich Sept final 48.1 (4-mo low) · 1-yr exp 4.6% · 5–10yr anchor 3.4% held</td><td style="text-align:right;"><span class="pill hot">STAGFLATION SIGNAL CONFIRMED</span></td></tr>
+      <tr><td class="dom">Central Banks</td><td>Fed +25bp 16 Sep (12-0) · ECB +25bp 10 Sep · BoE hold 6-3 · next FOMC 28 Oct</td><td style="text-align:right;"><span class="pill hot">TIGHTENING WAVE · FOLLOW-THROUGH LIVE</span></td></tr>
+      <tr><td class="dom">Financial Conditions</td><td>10y 5.18% (&gt;5%) · 2y 4.87% · HY 280bp · Oct odds ~70% · NFCI −0.555 (loose)</td><td style="text-align:right;"><span class="pill warm">HAWKISH REPRICING RD 2 · STRESS QUIET</span></td></tr>
+    </tbody>
+  </table>
+  <div class="footline">MACRO MONITOR · WEEKLY</div>
+</section>
+
+<!-- DETAIL + CHART -->
+<section class="page" data-page="03">
+  <div class="seclabel"><span>What the Data Is Saying</span><span class="ix">§ 3</span></div>
+  <div class="block">
+    <h3>Inflation — no new print, but the pipeline is heating</h3>
+    <p>No fresh CPI, PPI or PCE landed this week — the August figures (CPI/PPI released 10–11 Sep) remain the standing read: headline CPI <b>+0.4% m/m / +3.4% y/y</b>, core <b>+0.3% m/m</b> (the hottest monthly gain since April) even as core year-on-year ticked to a new cycle low of <b>2.4%</b>. What moved this week was the <i>pipeline</i>: <b>S&amp;P Global flash PMIs showed input costs at four-year highs</b> on fuel and wages, and ISM services Prices Paid is already at a four-year high of <b>72.6</b>. Along the lead/lag chain, elevated prices-paid feeds PPI and then core CPI/PCE with a one-to-three-month lag — so the inflation impulse is building beneath a headline that hasn't refreshed. The single most important print for the October–December hike debate is <b>core PCE (August), due Wednesday 30 September</b>.</p>
+  </div>
+  <div class="block" style="margin-top:18px;">
+    <h3>The mandate gauge is still stalled above the cooler headline</h3>
+    <p>The disinflation trend on the consumer side is intact on a year-on-year basis — <b>core CPI at a four-year low of +2.4%</b> — but the gauge the Fed actually targets is not cooperating. <b>Core PCE held at +3.3% y/y</b> (July reading; the August print lands 30 Sep), failing to extend its earlier drop and sitting <b>1.3pp above the 2% mandate</b>. That gap — a cooling CPI trend against a stalled PCE gauge, now with core CPI <i>monthly</i> momentum re-accelerating — is the crux of the follow-through debate. Core PCE on 30 Sep is the single most important print for the odds of an October or December hike.</p>
+  </div>
+  <div class="chartcard">
+    <div class="ct">The Fed's gauge (PCE) is stalling above the cooler CPI core</div>
+    <div class="cs">Consumer inflation, % change year-on-year — headline vs core (CPI August, PCE July latest)</div>
+    <!-- CHART = dependency-free HTML/CSS bars (NO Chart.js, NO CDN). To update each week: set every .bc-bar height to value/8*100 (e.g. 3.4% -> height:42.5%) and edit its <b> value label. Do NOT reintroduce Chart.js or any external script. -->
+    <div class="bc">
+      <div class="bc-plot">
+        <div class="bc-line" style="bottom:100%"><i>8%</i></div>
+        <div class="bc-line" style="bottom:75%"><i>6%</i></div>
+        <div class="bc-line" style="bottom:50%"><i>4%</i></div>
+        <div class="bc-line" style="bottom:25%"><i>2%</i></div>
+        <div class="bc-line base" style="bottom:0"><i>0%</i></div>
+        <div class="bc-groups">
+          <div class="bc-grp"><div class="bc-bars">
+            <div class="bc-bar hd" style="height:42.5%"><b>+3.4%</b></div>
+            <div class="bc-bar co" style="height:30%"><b>+2.4%</b></div>
+          </div></div>
+          <div class="bc-grp"><div class="bc-bars">
+            <div class="bc-bar hd" style="height:46.25%"><b>+3.7%</b></div>
+            <div class="bc-bar co" style="height:41.25%"><b>+3.3%</b></div>
+          </div></div>
+        </div>
+      </div>
+      <div class="bc-x"><span>CPI (consumer)</span><span>PCE (Fed's gauge)</span></div>
+      <div class="bc-legend"><span class="sw hd"></span>Headline<span class="sw co"></span>Core (ex food &amp; energy)</div>
+    </div>
+    <div class="cap">Core CPI eased to a four-year low of 2.4% year-on-year, but core PCE — the gauge the Fed actually targets — held at 3.3%, roughly a full point higher and no longer falling; and core CPI's <i>monthly</i> pace re-accelerated to +0.3% in August. That divergence, plus the monthly re-acceleration, is why the Fed hiked.</div>
+  </div>
+  <div class="block" style="margin-top:18px;">
+    <h3>Growth &amp; housing — a two-track economy; capex and new-home sales surprise up</h3>
+    <p>The <b>two-track economy</b> is intact, and this week the resilient track added evidence. <b>August durable-goods core capex (nondefence ex-aircraft) rose +1.6%</b> — a large beat versus the +0.5% consensus, with the headline flat only because of a transport drag (aircraft −4.3%) — confirming the AI-driven business-investment boom. That sits alongside a strong consumer (August retail control group +1.4%) and re-accelerating, inflationary services (ISM Services 55.4, Prices Paid 72.6). In housing, <b>August new-home sales jumped +6.4% to 684K</b>, an eight-month high — but on price cuts and incentives, and likely partly pull-forward ahead of higher rates. The forward and rate-sensitive indicators stay soft: <b>industrial production flat with manufacturing output down</b>, <b>permits −2.7%</b>, <b>starts −2.6%</b>, existing sales −2.0% (inventory the highest since Nov 2019), and the <b>30-yr mortgage back near 7.03%</b>. The expansion is carried by capex, the consumer and services — not by manufacturing or the housing pipeline.</p>
+  </div>
+  <div class="block">
+    <h3>Policy, markets &amp; sentiment — the market front-runs a second hike</h3>
+    <p>The September tightening wave (Fed +25bp on 16 Sep, ECB +25bp on 10 Sep, a hawkish 6-3 BoE hold on 17 Sep) is complete; the story now is <b>follow-through, and the market is pricing it aggressively</b>. The long end has joined the repricing: <b>the 10-year cleared 5% for the first time this cycle (+24bp to 5.18%)</b>, driven by <b>real yields (+24bp to 2.85%) with breakevens flat (2.33%)</b> — Fed-credibility tightening, not an inflation scare — while the 2-year firmed to 4.87% and the curve bear-steepened without re-inverting. <b>CME FedWatch now prices 28 Oct at ~70%</b> (from ~40% post-FOMC), ~93% for at least one more by year-end, reinforced by Fed speakers (Barr, Musalem, Collins) and hot flash PMIs. Sentiment confirmed its <b>stagflation signal</b>: the <b>UMich September final held at 48.1</b> (a four-month low) with <b>both inflation anchors elevated — 1-yr 4.6%, 5–10yr 3.4%</b> — the final validating, not softening, the preliminary. Yet stress channels are still not confirming: <b>HY 280bp (below the ~290bp tripwire), VIX 14.21, NFCI −0.555 still loose</b> — the delivered hike is not yet visible in weekly financial conditions, which is why this reads as repricing, not stress.</p>
+  </div>
+  <div class="footline">MACRO MONITOR · WEEKLY</div>
+</section>
+
+<!-- OUTLOOK + STATUS -->
+<section class="page" data-page="04">
+  <div class="seclabel"><span>Outlook &amp; Operations</span><span class="ix">§ 4</span></div>
+  <div class="two">
+    <div class="callout watch" style="border-left-color:var(--navy);">
+      <h3>Regime Watch</h3>
+      <ul>
+        <li><span class="tag h">HAWKISH</span><b>The market has answered the follow-through question — hawkishly.</b> CME now prices 28 Oct at ~70% (from ~40% post-FOMC) and ~93% for ≥1 more by year-end, ahead of the dots' one-more median. <i>Confirm (Oct hike firms):</i> core PCE (30 Sep) holds ≥3.3% <b>and</b> September payrolls (2 Oct) print firm. <i>Deny (market fades it):</i> core PCE cools toward 3.0% <b>and</b> a soft NFP with a claims break.</li>
+        <li><span class="tag h">STAGFLATION</span><b>The stagflation signal is confirmed, not softening:</b> the UMich September <i>final</i> held at 48.1 (a four-month low) with both inflation anchors elevated (1-yr 4.6%, 5–10yr 3.4%). <i>Watch:</i> whether the <b>5–10yr anchor stays ≥3.4%</b> and <b>core PCE (30 Sep)</b> holds ≥3.3%; a revert to 3.3% on the anchor would deny it.</li>
+        <li><span class="tag l">DOWNSIDE</span><b>Hard-landing risk still far off, but the rate-sensitive pocket persists:</b> stress channels are quiet (HY 280bp below the ~290bp tripwire, NFCI −0.555 loose, curve dis-inverted), yet housing sits at cycle lows and factory output is flat-to-soft — and the fresh hike plus a 10y through 5% will press harder. <i>Watch:</i> HY breaching 290bp, a curve re-inversion, or a second soft IP/manufacturing print.</li>
+      </ul>
+    </div>
+    <div class="callout ahead" style="border-left-color:var(--blue);">
+      <h3>The Week Ahead</h3>
+      <ul class="cal">
+        <li><span class="dt">Mon 28</span><span>🇩🇪 Ifo business climate (Sept)</span></li>
+        <li><span class="dt">Tue 29</span><span>🇺🇸 Conference Board consumer confidence (Sept); 🇺🇸 JOLTS (Aug) — the lone soft labour signal</span></li>
+        <li><span class="dt">Wed 30</span><span><span class="star">★</span> 🇺🇸 <b>core PCE / Personal Income &amp; Outlays (Aug)</b> — the Fed's gauge, the key print for Oct hike odds; 🇺🇸 Q2 GDP third estimate; 🇺🇸 ADP (Sept)</span></li>
+        <li><span class="dt">Thu–Fri</span><span>1 Oct — 🇺🇸 Jobless claims, ISM Manufacturing (Sept) &amp; 🇪🇺 Eurozone HICP flash (Sept); <b>2 Oct — 🇺🇸 September payrolls (NFP)</b>, consensus ~+52.5K — claims point to upside risk</span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="opnote">
+    <h3>⚙ Monitoring Status</h3>
+    <p>All seven surveillance domains are <b>live and fresh</b> — each checked within the last 36 hours (Central Banks 14:30 ET, Financial Conditions 16:32 ET, the remaining five ~11:00 ET on Friday 25 Sep). Growth &amp; Activity, auto-restored last week, has fully resumed writing (its collector logged the August durable-goods print this run), clearing last week's staleness flag. Underlying data is current as of <b>Friday 25 September</b>. The next refresh follows the month-end wave — core PCE, Q2 GDP, JOLTS, consumer confidence and September payrolls.</p>
+  </div>
+  <div class="docfoot">
+    <p><b>Bottom line for the desk:</b> a week after the hike to 3.75–4.00%, the market is front-running a second one — the 10-year cleared 5% for the first time this cycle on rising real yields (breakevens flat), and CME prices 28 Oct near 70%, ahead of the dots' one-more median. The data keeps validating it: strong core capex, hot flash PMIs with four-year-high input costs, deepening jobless claims, and a UMich final that confirmed both elevated inflation anchors. Stress is still absent (HY 280bp, VIX 14.21, NFCI loose), so this is repricing, not distress. The counter-currents — housing at cycle lows, flat factory output, a four-month-low in sentiment — are being overridden. It all gets arbitrated at month-end: <b>core PCE (30 Sep) and September payrolls (2 Oct)</b>.</p>
+    <p class="gl">KEY — CPI: consumer prices · PPI: producer (wholesale) prices · PCE: Fed's preferred inflation gauge · NFP: non-farm payrolls · AHE: average hourly earnings · ISM/JOLTS: activity &amp; job-openings surveys · FOMC: Fed policy meeting · SEP/dots: Fed rate projections · HY: high-yield credit · NFCI: financial-conditions index · bp: basis points.</p>
+    <p style="margin-top:8px;">Source: Macro Monitor blackboard (swarm-collected, primary-sourced). Prepared by the Macro Strategist orchestrator. <b>Internal monitoring summary — not investment advice.</b></p>
+  </div>
+  <div class="opnote" style="background:#eef3f9; border:1px solid #cfe0f2; margin-top:18px;">
+    <h3 style="color:var(--blue);">✔ Quality Assurance</h3>
+    <p>This edition was checked after generation against the <i>Macro Friday Report — Factual Accuracy Audit</i> rubric — dates &amp; calendar, figure fidelity, claim grounding, internal consistency and attribution. <a href="../rubric/2026-W39.html" style="color:var(--blue); font-weight:600; text-decoration:none;">Rubric — qualitative check&nbsp;→</a></p>
+  </div>
+  <div class="footline">MACRO MONITOR · WEEKLY</div>
+</section>
+
+<footer class="site-footer">
+  <p class="attrib">Service offered by <a href="https://atnode.ai" target="_blank" rel="noopener noreferrer">atnode.ai</a> using the awesome <a href="https://hyperagent.com" target="_blank" rel="noopener noreferrer">hyperagent platform</a>.</p>
+  <p class="gl">Published automatically every Saturday · Internal monitoring summary — not investment advice.</p>
+</footer>
+</body>
+</html>

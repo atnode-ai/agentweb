@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Macro Monitor — Factual Accuracy Audit · W39 (w/e 25 Sep 2026)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0f2a4a; --blue:#1f5fa8; --ink:#1a2230; --muted:#5b6776;
+    --line:#e2e7ee; --soft:#f4f6f9; --bg:#e7eaef;
+    --hot:#c0392b; --warm:#b87211; --cool:#1f7a5a;
+    --hot-bg:#fbeae8; --warm-bg:#f8f0e1; --cool-bg:#e8f3ee; --blue-bg:#eaf1f9;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{background:var(--bg); color:var(--ink);
+    font-family:'Inter',-apple-system,system-ui,sans-serif; line-height:1.55;
+    -webkit-font-smoothing:antialiased; padding:0 0 64px;}
+  .num{font-variant-numeric:tabular-nums; font-feature-settings:"tnum";}
+
+  /* site nav */
+  .nav{background:var(--navy); color:#fff;}
+  .nav .in{width:min(880px,94vw); margin:0 auto; padding:14px 0;
+    display:flex; align-items:center; justify-content:space-between;}
+  .nav .brand{display:flex; align-items:center; gap:11px;}
+  .nav .dot{width:30px;height:30px;border-radius:7px;background:#fff;color:var(--navy);
+    display:flex;align-items:center;justify-content:center;font-size:16px;}
+  .nav .nm{font-weight:700;font-size:15px;letter-spacing:-.01em;}
+  .nav a.back{color:#9fc0e6; text-decoration:none; font-family:'IBM Plex Mono',monospace;
+    font-size:12px; letter-spacing:.04em;}
+  .nav a.back:hover{color:#fff;}
+
+  .page{width:min(880px,94vw); background:#fff; margin:0 auto 30px;
+    padding:54px 64px 60px; box-shadow:0 2px 26px rgba(15,42,74,.11); position:relative;}
+  .page.first{margin-top:30px; border-top:4px solid var(--navy);}
+  .page::after{content:attr(data-page); position:absolute; bottom:22px; right:64px;
+    font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.04em; color:#9aa6b4;}
+  .footline{position:absolute; bottom:22px; left:64px;
+    font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.04em; color:#9aa6b4;}
+  @media(max-width:640px){ .page{padding:40px 26px 56px;} .page::after,.footline{right:26px;left:26px;} }
+
+  .kicker{font-family:'IBM Plex Mono',monospace; font-size:12px; font-weight:600;
+    letter-spacing:.22em; text-transform:uppercase; color:var(--blue);}
+  h1,h2,h3{margin:0; line-height:1.15; letter-spacing:-.01em;}
+  p{margin:0 0 12px;}
+
+  .cover{min-height:74vh; display:flex; flex-direction:column;}
+  .cover .top{display:flex; justify-content:space-between; align-items:flex-start; gap:16px;
+    padding-bottom:20px; border-bottom:1px solid var(--line);}
+  .brand2{display:flex; align-items:center; gap:11px;}
+  .brand2 .d{width:34px;height:34px;border-radius:7px;background:var(--navy);
+    display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;}
+  .brand2 .nm{font-weight:700; font-size:15px;}
+  .brand2 .sb{font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--muted); letter-spacing:.06em;}
+  .cover .mid{flex:1; display:flex; flex-direction:column; justify-content:center; padding:48px 0;}
+  .cover h1{font-size:52px; font-weight:800; color:var(--navy); margin:14px 0 0;}
+  .cover .sub{font-size:20px; color:var(--muted); font-weight:500; margin-top:14px;}
+  .cover .we{font-family:'IBM Plex Mono',monospace; font-size:13px; color:var(--ink); margin-top:28px; letter-spacing:.02em;}
+  .regimebar{margin-top:28px; background:var(--navy); color:#fff; border-radius:8px;
+    padding:18px 22px; display:flex; gap:14px; align-items:baseline; flex-wrap:wrap;}
+  .regimebar .lab{font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.18em;
+    text-transform:uppercase; color:#9fc0e6;}
+  .regimebar .txt{font-size:16px; font-weight:600;}
+  .metagrid{display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--line);
+    border:1px solid var(--line); border-radius:8px; overflow:hidden; margin-top:26px;}
+  .metagrid div{background:#fff; padding:13px 15px;}
+  .metagrid .k{font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.12em;
+    text-transform:uppercase; color:var(--muted);}
+  .metagrid .v{font-size:13px; font-weight:600; margin-top:3px;}
+  @media(max-width:640px){ .cover h1{font-size:36px;} .metagrid{grid-template-columns:repeat(2,1fr);} }
+
+  .seclabel{font-family:'IBM Plex Mono',monospace; font-size:12px; font-weight:600;
+    letter-spacing:.16em; text-transform:uppercase; color:var(--blue);
+    padding-bottom:9px; border-bottom:2px solid var(--navy); margin-bottom:18px;
+    display:flex; justify-content:space-between; align-items:baseline;}
+  .seclabel .ix{color:#aab4c1; font-weight:500;}
+
+  .callout{background:var(--soft); border-left:4px solid var(--blue);
+    border-radius:0 8px 8px 0; padding:18px 22px; margin:0 0 22px;}
+  .callout.lead{font-size:15.5px;}
+
+  .kpis{display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin:0 0 24px;}
+  .kpi{border:1px solid var(--line); border-radius:9px; padding:14px 16px; background:#fff;}
+  .kpi .k{font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:.1em;
+    text-transform:uppercase; color:var(--muted);}
+  .kpi .v{font-size:25px; font-weight:800; color:var(--navy); margin-top:5px; letter-spacing:-.02em;}
+  .kpi .d{font-size:11.5px; color:var(--muted); margin-top:2px;}
+  .kpi .v.hot{color:var(--hot);} .kpi .v.cool{color:var(--cool);} .kpi .v.warm{color:var(--warm);}
+  @media(max-width:640px){ .kpis{grid-template-columns:repeat(2,1fr);} }
+
+  table{width:100%; border-collapse:collapse; margin:4px 0 8px; font-size:13.5px;}
+  thead th{font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:.07em;
+    text-transform:uppercase; color:var(--muted); text-align:left; padding:8px 10px;
+    border-bottom:2px solid var(--navy);}
+  tbody td{padding:10px; border-bottom:1px solid var(--line); vertical-align:top;}
+  tbody tr:last-child td{border-bottom:none;}
+  td.dom{font-weight:700; color:var(--navy); white-space:nowrap;}
+  .pill{display:inline-block; font-size:11px; font-weight:600; padding:3px 9px; border-radius:20px;
+    font-family:'IBM Plex Mono',monospace; letter-spacing:.02em; white-space:nowrap;}
+  .pill.hot{background:var(--hot-bg); color:var(--hot);}
+  .pill.warm{background:var(--warm-bg); color:var(--warm);}
+  .pill.cool{background:var(--cool-bg); color:var(--cool);}
+  .pill.grey{background:#eef1f4; color:#7a8694;}
+
+  .block{margin-bottom:17px;}
+  .block h3{font-size:16px; font-weight:700; color:var(--navy); margin-bottom:4px;}
+  .block p{font-size:14px; color:#2b3543;}
+
+  .chartcard{border:1px solid var(--line); border-radius:10px; padding:18px 20px 14px; margin:6px 0 8px; background:#fff;}
+  .chartcard .ct{font-size:13px; font-weight:700; color:var(--navy);}
+  .chartcard .cs{font-size:11.5px; color:var(--muted); margin-bottom:10px;}
+  .chartwrap{height:250px; position:relative;}
+  .cap{font-size:11px; color:var(--muted); margin-top:8px; font-style:italic;}
+
+  .two{display:grid; grid-template-columns:1fr 1fr; gap:18px;}
+  @media(max-width:640px){ .two{grid-template-columns:1fr;} }
+  .watch h3,.ahead h3{font-size:13px; font-family:'IBM Plex Mono',monospace; letter-spacing:.08em;
+    text-transform:uppercase; color:var(--navy); margin-bottom:9px;}
+  .watch ul{margin:0; padding:0; list-style:none;}
+  .watch li{font-size:13px; padding:7px 0; border-bottom:1px dashed var(--line); color:#2b3543;}
+  .watch li:last-child{border-bottom:none;}
+  .watch li b{color:var(--navy);}
+  .tag{font-family:'IBM Plex Mono',monospace; font-size:10px; padding:2px 7px; border-radius:4px; margin-right:7px;}
+  .tag.h{background:var(--hot-bg); color:var(--hot);}
+  .tag.b{background:var(--cool-bg); color:var(--cool);}
+  .tag.l{background:var(--warm-bg); color:var(--warm);}
+  .cal{margin:0; padding:0; list-style:none;}
+  .cal li{display:flex; gap:11px; font-size:13px; padding:7px 0; border-bottom:1px dashed var(--line);}
+  .cal li:last-child{border-bottom:none;}
+  .cal .dt{font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--blue);
+    font-weight:600; white-space:nowrap; min-width:62px;}
+  .cal .star{color:var(--hot);}
+
+  .opnote{background:#fbfaf4; border:1px solid #ece3c9; border-radius:9px; padding:15px 18px; margin-top:6px;}
+  .opnote h3{font-size:12px; font-family:'IBM Plex Mono',monospace; letter-spacing:.08em;
+    text-transform:uppercase; color:var(--warm); margin-bottom:7px;}
+  .opnote p{font-size:13px; color:#3a4250; margin:0;}
+
+  .docfoot{margin-top:26px; padding-top:16px; border-top:1px solid var(--line);
+    font-size:11px; color:var(--muted); line-height:1.5;}
+  .docfoot .gl{font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:#6b7785;}
+  .site-footer{width:min(880px,94vw); margin:24px auto 40px; text-align:center; font-size:13px; color:var(--muted);}
+  .site-footer .attrib a{color:var(--blue); font-weight:600; text-decoration:none;}
+  .site-footer .attrib a:hover{text-decoration:underline;}
+  .site-footer .gl{font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:#7a8694; margin-top:8px;}
+  /* dependency-free bar chart (no CDN / no JS) */
+  .bc{margin-top:2px;}
+  .bc-plot{position:relative; height:200px; margin-left:32px; border-bottom:1px solid var(--line);}
+  .bc-line{position:absolute; left:0; right:0; border-top:1px dashed #eef1f4;}
+  .bc-line i{position:absolute; left:-32px; top:-8px; font-family:'IBM Plex Mono',monospace; font-size:10.5px; font-style:normal; color:#9aa6b4;}
+  .bc-line.base{border-top:none;}
+  .bc-groups{position:absolute; inset:0; display:flex;}
+  .bc-grp{flex:1; display:flex; align-items:flex-end; justify-content:center;}
+  .bc-bars{display:flex; align-items:flex-end; gap:16px; height:100%;}
+  .bc-bar{width:58px; border-radius:4px 4px 0 0; position:relative;}
+  .bc-bar.hd{background:var(--hot);}
+  .bc-bar.co{background:var(--blue);}
+  .bc-bar b{position:absolute; top:-19px; left:50%; transform:translateX(-50%); font-family:'IBM Plex Mono',monospace; font-weight:600; font-size:12px; color:var(--ink); white-space:nowrap;}
+  .bc-x{display:flex; margin:8px 0 0 32px;}
+  .bc-x span{flex:1; text-align:center; font-size:12.5px; font-weight:600; color:var(--ink);}
+  .bc-legend{display:flex; align-items:center; justify-content:center; gap:7px; margin-top:14px; font-size:12px; color:var(--muted);}
+  .bc-legend .sw{width:12px; height:12px; border-radius:3px; display:inline-block;}
+  .bc-legend .sw.hd{background:var(--hot);}
+  .bc-legend .sw.co{background:var(--blue); margin-left:12px;}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="in">
+    <div class="brand"><span class="dot">📡</span><span class="nm">Macro Monitor</span></div>
+    <a class="back" href="../index.html">← All reports</a>
+  </div>
+</nav>
+
+<!-- COVER -->
+<section class="page first cover" data-page="QA" style="min-height:auto;">
+  <div class="top">
+    <div class="brand2">
+      <div class="d">📡</div>
+      <div><div class="nm">Macro Monitor</div><div class="sb">FACTUAL ACCURACY AUDIT</div></div>
+    </div>
+    <div style="text-align:right;">
+      <div class="kicker">Quality Assurance</div>
+      <div class="sb" style="margin-top:4px;">No. 2026-W39</div>
+    </div>
+  </div>
+  <div class="mid" style="padding:36px 0;">
+    <div class="kicker">Post-Generation Self-Audit</div>
+    <h1 style="font-size:44px;">Qualitative<br>Check</h1>
+    <div class="sub">Factual-accuracy audit of the W39 briefing, blackboard synthesis &amp; Slack summary.</div>
+    <div class="we">WEEK ENDING&nbsp;&nbsp;·&nbsp;&nbsp;FRIDAY, 25 SEPTEMBER 2026</div>
+    <div class="regimebar" style="align-items:center;">
+      <span class="lab">Overall score</span>
+      <span class="txt" style="font-size:24px;">4.70 / 5.00</span>
+      <span class="txt" style="font-weight:500; font-size:14px; color:#9fc0e6;">weighted across five criteria · 2 corrections applied, 1 item flagged</span>
+    </div>
+  </div>
+  <div class="footline">MACRO MONITOR · QA</div>
+</section>
+
+<!-- SCORECARD -->
+<section class="page" data-page="QA">
+  <div class="seclabel"><span>Rubric Scorecard</span><span class="ix">Macro Friday Report — Factual Accuracy Audit</span></div>
+  <table>
+    <thead><tr><th>Criterion</th><th style="text-align:center;">Weight</th><th style="text-align:center;">Score /5</th><th>Assessment</th></tr></thead>
+    <tbody>
+      <tr>
+        <td class="dom">Event Date &amp; Calendar Accuracy</td>
+        <td style="text-align:center;" class="num">0.30</td>
+        <td style="text-align:center;"><span class="pill warm">4</span></td>
+        <td>Every dated event re-derived from the calendar: FOMC hike Wed 16 Sep, ECB Thu 10 Sep, BoE Thu 17 Sep, next FOMC Wed 28 Oct — all correct. Week-ahead weekday-verified (Ifo Mon 28, CB Confidence &amp; JOLTS Tue 29, core PCE / Q2 GDP third est. / ADP Wed 30, claims &amp; ISM Mfg Thu 1 Oct, Sep NFP Fri 2 Oct); no event on a weekend. An over-precise EZ HICP-flash date (Wed 30) was caught and windowed to ~1 Oct. −1: August JOLTS is dated Tue 29 Sep per the Labor desk, but the generic release cadence would put it in early October — a residual date-provenance tension deferred to the domain owner, not independently confirmed (no web lookup permitted for the week-ahead).</td>
+      </tr>
+      <tr>
+        <td class="dom">Figure &amp; Data Fidelity vs Blackboard</td>
+        <td style="text-align:center;" class="num">0.25</td>
+        <td style="text-align:center;"><span class="pill cool">5</span></td>
+        <td>All KPI tiles, the 7-row scorecard and every narrative figure tie to the blackboard's logged values (10y 5.18%, real 2.85%, BE 2.33%, 2y 4.87%, HY 280bp, NFCI −0.555, Oct odds ~70%, durable core capex +1.6%, claims 197K / 4-wk 202.25K, UMich final 48.1, new-home +6.4%). Inflation bar-chart heights recompute exactly (3.4→42.5%, 2.4→30%, 3.7→46.25%, 3.3→41.25%); no new inflation print this week so the chart is unchanged. NFP consensus tightened from a ~53K round to the exact FactSet ~52.5K.</td>
+      </tr>
+      <tr>
+        <td class="dom">Claim Grounding / No Fabrication</td>
+        <td style="text-align:center;" class="num">0.20</td>
+        <td style="text-align:center;"><span class="pill cool">5</span></td>
+        <td>Every claim traces to a blackboard entry or the release-calendar memory; no invented prints. All seven domains are fresh (&lt;36h) this run — Growth &amp; Activity, auto-restored last week, has resumed writing (it logged the Aug durable-goods print this run), so no domain is stale or carried-forward and the prior week's staleness caveat is cleared.</td>
+      </tr>
+      <tr>
+        <td class="dom">Internal Consistency</td>
+        <td style="text-align:center;" class="num">0.15</td>
+        <td style="text-align:center;"><span class="pill cool">5</span></td>
+        <td>Narrative, Regime Watch, Week Ahead, KPI tiles and Domain Scorecard agree; the Slack summary, blackboard synthesis and published report share one regime headline (hawkish repricing, round 2 — market front-running a second hike), the same week-ahead items and identical numbers.</td>
+      </tr>
+      <tr>
+        <td class="dom">Attribution &amp; Recency Correctness</td>
+        <td style="text-align:center;" class="num">0.10</td>
+        <td style="text-align:center;"><span class="pill cool">5</span></td>
+        <td>Fed Chair = Warsh (his third meeting), not Powell. Reference months correct (Aug durable goods / housing / claims wk Sep 19 / UMich Sept final; core PCE labelled "Aug print 30 Sep"; Q2 GDP third estimate). Lead/lag directions correct (ISM Prices→PPI→CPI; claims→NFP; permits→starts; financial conditions &amp; the market-implied path lead the real economy).</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="opnote" style="background:#eef3f9; border:1px solid #cfe0f2; margin-top:20px;">
+    <h3 style="color:var(--blue);">Weighted result</h3>
+    <p>(4 × 0.30) + (5 × 0.25) + (5 × 0.20) + (5 × 0.15) + (5 × 0.10) = <b>4.70 / 5.00</b>.</p>
+  </div>
+  <div class="footline">MACRO MONITOR · QA</div>
+</section>
+
+<!-- FINDINGS -->
+<section class="page" data-page="QA">
+  <div class="seclabel"><span>Findings &amp; Corrections</span><span class="ix">§ resolved pre-publish</span></div>
+  <div class="block">
+    <h3>1 · Eurozone HICP-flash date over-precise — corrected (calendar)</h3>
+    <p>The draft week-ahead placed the September Eurozone HICP flash on <b>Wed 30 Sep</b>. Eurostat releases the flash estimate on the last working day of the reference month or the first working day of the next, so a hard Sep-30 date was falsely precise. <b>Resolution:</b> moved to the <b>~1 Oct</b> window (grouped with the Thu 1 Oct US claims / ISM Manufacturing block) in both the published report and the blackboard synthesis before publishing.</p>
+  </div>
+  <div class="block" style="margin-top:16px;">
+    <h3>2 · September NFP consensus rounding — corrected (figure)</h3>
+    <p>The draft stated the September payrolls consensus as <b>~+53K</b>, a round of the blackboard's logged FactSet figure of <b>~+52.5K</b>. <b>Resolution:</b> tightened to the exact ~+52.5K in the report and synthesis so the figure ties precisely to the Labor section's logged value.</p>
+  </div>
+  <div class="block" style="margin-top:16px;">
+    <h3>3 · August JOLTS release date — flagged, deferred (calendar)</h3>
+    <p>The Labor domain logs <b>August JOLTS on Tue 29 Sep</b>; the generic release cadence (JOLTS in the first week of a month, ~2-month data lag) would instead place the August report in <b>early October</b>. The two sources disagree. Because Part D bars a web lookup for the week-ahead and the blackboard is the authoritative source — with the Labor desk owning the JOLTS schedule and Sep 29 being a valid Tuesday — the date was <b>kept as logged and flagged for transparency</b> rather than overridden. This residual, unconfirmed date-provenance tension is the −1 on Event Date &amp; Calendar Accuracy.</p>
+  </div>
+  <div class="opnote" style="margin-top:18px;">
+    <h3>⚙ Audit method</h3>
+    <p>Weekdays for every dated event were re-derived programmatically from the calendar date and cross-checked against the baked-in US/UK/EZ release-calendar memory. Every figure was diffed against the blackboard's logged values, and bar-chart heights were recomputed (value ÷ 8 × 100). A leftover-token scan confirmed no W38-era figures (4.94%, ~54%, 47.8, "18 September") carried over into the W39 edition.</p>
+  </div>
+  <p style="margin-top:22px; font-size:13px;">
+    <a href="../reports/2026-W39.html" style="color:var(--blue); font-weight:600; text-decoration:none;">← Business briefing (W39)</a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    <a href="../blackboard/2026-W39.html" style="color:var(--blue); font-weight:600; text-decoration:none;">Detailed blackboard (W39) →</a>
+  </p>
+  <div class="footline">MACRO MONITOR · QA</div>
+</section>
+
+<footer class="site-footer">
+  <p class="attrib">Service offered by <a href="https://atnode.ai" target="_blank" rel="noopener noreferrer">atnode.ai</a> using the awesome <a href="https://hyperagent.com" target="_blank" rel="noopener noreferrer">hyperagent platform</a>.</p>
+  <p class="gl">Published automatically every Saturday · Internal monitoring summary — not investment advice.</p>
+</footer>
+</body>
+</html>
